@@ -1,0 +1,848 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#162032;--ore:#E8622A;--oreL:#FEF0EA;--oreD:#712B13;
+  --purple:#6B4EE6;--purpleL:#EEF0FF;--purpleD:#3C3489;
+  --teal:#18A876;--tealL:#E3F7F0;--tealD:#0F6E50;
+  --amber:#F5A623;--amberL:#FEF4E3;--amberD:#633806;
+  --blue:#2B7BE0;--blueL:#EAF2FD;--blueD:#1A4F94;
+  --green:#4CAF50;--greenL:#EAF3DE;--greenD:#27500A;
+  --red:#E53935;--redL:#FFEBEE;--redD:#791F1F;
+  --txt:var(--color-text-primary);--muted:var(--color-text-secondary);
+  --bdr:var(--color-border-tertiary);--bg:#F2F4F7;--card:var(--color-background-primary)
+}
+body{font-family:var(--font-sans,sans-serif);font-size:13px;color:var(--txt)}
+.dash{display:grid;grid-template-columns:200px 1fr}
+.sidebar{background:var(--navy);display:flex;flex-direction:column;min-height:100vh}
+.logo-area{padding:14px 12px 10px;border-bottom:1px solid rgba(255,255,255,.07)}
+.brand-name{color:#fff;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;line-height:1.25}
+.brand-tag{color:rgba(255,255,255,.35);font-size:9px;margin-top:1px}
+nav{flex:1;padding:6px 0}
+.ns{font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px;padding:8px 13px 2px;font-weight:500}
+.ni{display:flex;align-items:center;gap:7px;padding:7px 13px;cursor:pointer;color:rgba(255,255,255,.48);font-size:11px;border-left:2px solid transparent;transition:all .15s;line-height:1.2}
+.ni:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.85)}
+.ni.active{background:rgba(107,78,230,.2);color:#A599F5;border-left-color:#6B4EE6}
+.ni svg{width:12px;height:12px;stroke:currentColor;fill:none;flex-shrink:0;opacity:.8}
+.sa{margin:10px;background:rgba(255,255,255,.04);border-radius:8px;padding:9px}
+.sa-t{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:500}
+.sa-b{font-size:9px;color:rgba(255,255,255,.38);line-height:1.55}
+.su{font-size:9px;color:rgba(255,255,255,.28);padding:7px 13px 10px;display:flex;align-items:center;gap:4px;border-top:1px solid rgba(255,255,255,.06)}
+.su-dot{width:5px;height:5px;border-radius:50%;background:#18A876;flex-shrink:0}
+.main{background:var(--bg);overflow:auto;min-height:100vh}
+.topbar{background:var(--card);border-bottom:.5px solid var(--bdr);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tb-title{font-size:14px;font-weight:500}
+.tb-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.tb-r{display:flex;align-items:center;gap:5px}
+.ctrl{display:flex;align-items:center;gap:3px;background:var(--bg);border:.5px solid var(--bdr);border-radius:5px;padding:3px 7px;font-size:9px;color:var(--muted)}
+.ctrl svg{width:9px;height:9px;stroke:currentColor;fill:none}
+.ctrl select{background:transparent;border:none;outline:none;font-size:9px;color:var(--muted);font-family:inherit;cursor:pointer}
+.exp{background:var(--navy);color:#fff;border:none;border-radius:5px;padding:5px 12px;font-size:10px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px}
+.exp svg{width:10px;height:10px;stroke:#fff;fill:none}
+.content{padding:13px 15px}
+.page{display:none}.page.active{display:block}
+.card{background:var(--card);border:.5px solid var(--bdr);border-radius:10px;padding:12px}
+.ct{font-size:9px;font-weight:500;color:var(--txt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.idot{width:13px;height:13px;border-radius:50%;background:var(--bg);border:.5px solid var(--bdr);display:inline-flex;align-items:center;justify-content:center;font-size:7px;color:var(--muted)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:9px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:9px}
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:12px}
+.kcard{background:var(--card);border:.5px solid var(--bdr);border-radius:10px;padding:13px 12px;display:flex;align-items:flex-start;gap:10px}
+.kcirc{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kcirc svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
+.klbl{font-size:9px;color:var(--muted);margin-bottom:2px;line-height:1.3}
+.kval{font-size:21px;font-weight:500;line-height:1;color:var(--txt)}
+.kval.sm{font-size:13px;margin-top:2px;line-height:1.3}
+.ksub{font-size:9px;color:var(--muted);margin-top:2px}
+.mgrid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,2.1fr) minmax(0,1.3fr) minmax(0,1.3fr);gap:9px;margin-bottom:12px}
+.cb-row{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.cb-lbl{font-size:9px;color:var(--muted);width:122px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb-trk{flex:1;height:8px;background:#EEF0F2;border-radius:4px;overflow:hidden}
+.cb-fill{height:100%;border-radius:4px}
+.cb-pct{font-size:9px;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
+.ax{display:flex;justify-content:space-between;margin-top:3px;padding-left:127px}
+.ax span{font-size:8px;color:var(--muted)}
+.vbtn{display:inline-block;margin-top:7px;padding:4px 9px;border:.5px solid var(--bdr);border-radius:5px;font-size:9px;color:var(--txt);background:var(--card);cursor:pointer}
+.gleg{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.gleg span{font-size:8px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.lsq{width:7px;height:7px;border-radius:1px;flex-shrink:0}
+.dr{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:.5px solid var(--bdr)}
+.dr:last-child{border-bottom:none}
+.dcirc{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dcirc svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2}
+.dnm{font-size:9px;color:var(--txt);line-height:1.3}
+.dsub{font-size:8px;color:var(--muted)}
+.dpct{font-size:12px;font-weight:500;color:var(--txt);flex-shrink:0}
+.prof-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;font-weight:500}
+.lgnd{font-size:8px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.lgnd span{display:flex;align-items:center;gap:3px}
+.ld{width:7px;height:7px;border-radius:1px;flex-shrink:0}
+/* Bridge */
+.bcols{display:grid;grid-template-columns:1fr 24px 1fr 24px 1fr;gap:0;align-items:start}
+.barr{display:flex;align-items:center;justify-content:center;padding-top:44px;opacity:.25}
+.barr svg{width:16px;height:16px;stroke:var(--txt);fill:none}
+.bcol{border-radius:7px;padding:9px}
+.bc-g{background:#FFF5F5;border:1px solid #FCCACA}
+.bc-p{background:#F0F4FF;border:1px solid #C5D2F6;cursor:pointer;transition:all .2s}
+.bc-p:hover{border-color:var(--blue);box-shadow:0 0 0 2px rgba(43,123,224,.15)}
+.bc-p.selected{border-color:var(--blue);background:#E4EFFD;box-shadow:0 0 0 2px rgba(43,123,224,.2)}
+.bc-s{background:#F0FAF5;border:1px solid #B3E8D0;cursor:pointer;transition:all .2s}
+.bc-s:hover{border-color:var(--teal);box-shadow:0 0 0 2px rgba(24,168,118,.15)}
+.bc-s.selected{border-color:var(--teal);background:#D9F5EC;box-shadow:0 0 0 2px rgba(24,168,118,.2)}
+.bct{font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;text-align:center;padding:2px 5px;border-radius:4px;display:block}
+.bct-g{color:#C0392B;background:#FDECEA}
+.bct-p{color:#1A4FBF;background:#E8EEFF}
+.bct-s{color:#0F6E50;background:#E0F5EC}
+.bi{font-size:9px;color:var(--txt);padding:2px 0;border-bottom:.5px solid rgba(0,0,0,.06);display:flex;gap:3px;line-height:1.4}
+.bi:last-child{border-bottom:none}
+.bi::before{content:"•";color:var(--muted);flex-shrink:0}
+.pstep{display:flex;gap:5px;margin-bottom:6px}
+.psn{width:16px;height:16px;border-radius:50%;background:var(--blue);color:#fff;font-size:8px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pst{font-size:9px;font-weight:500;color:var(--txt);margin-bottom:1px}
+.psd{font-size:8px;color:var(--muted);line-height:1.45}
+.s-star{width:24px;height:24px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px}
+.s-star svg{width:12px;height:12px;fill:#fff;stroke:none}
+.s-ttl{font-size:9px;font-weight:500;color:var(--teal);margin-bottom:3px;text-align:center}
+.schk{font-size:9px;color:var(--txt);display:flex;gap:3px;padding:2px 0;line-height:1.4}
+.schk svg{width:9px;height:9px;stroke:var(--teal);fill:none;flex-shrink:0;margin-top:1px;stroke-width:2.5}
+.s-en{font-size:8px;color:var(--teal);font-style:italic;margin-top:4px;line-height:1.4}
+.sel-hint{font-size:8px;color:var(--blue);margin-bottom:4px;display:flex;align-items:center;gap:3px;justify-content:center}
+.sel-hint svg{width:9px;height:9px;stroke:var(--blue);fill:none}
+.sol-detail{display:none;margin-top:10px;background:var(--card);border:.5px solid var(--bdr);border-radius:10px;overflow:hidden}
+.sol-detail.open{display:block}
+.sol-detail-head{background:var(--bg);padding:10px 14px;border-bottom:.5px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.sol-detail-head h3{font-size:11px;font-weight:500;color:var(--txt)}
+.sol-detail-close{background:none;border:none;cursor:pointer;font-size:14px;color:var(--muted);padding:0 4px;line-height:1}
+.sol-detail-body{padding:14px;overflow-y:auto;max-height:540px}
+.sol-section{margin-bottom:14px}
+.sol-section h4{font-size:10px;font-weight:500;color:var(--txt);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.sol-section h4::before{content:"";width:3px;height:12px;background:var(--ore);border-radius:2px;flex-shrink:0}
+.sol-section p{font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:4px}
+.sol-day{background:var(--bg);border-radius:6px;padding:8px 10px;margin-bottom:5px}
+.sol-day-title{font-size:10px;font-weight:500;color:var(--txt);margin-bottom:2px}
+.sol-day-desc{font-size:9px;color:var(--muted);line-height:1.5}
+.sol-table{width:100%;border-collapse:collapse;font-size:9px;margin-top:6px}
+.sol-table th{background:var(--bg);padding:4px 8px;text-align:left;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--bdr)}
+.sol-table td{padding:5px 8px;border-bottom:.5px solid var(--bdr);color:var(--txt);vertical-align:top;line-height:1.45}
+.sol-table tr:last-child td{border-bottom:none}
+/* Pugh table */
+.pugh-table{width:100%;border-collapse:collapse;font-size:9px;margin-top:8px}
+.pugh-table th{background:var(--navy);color:#fff;padding:5px 8px;text-align:center;font-weight:500;font-size:8px}
+.pugh-table th:first-child{text-align:left}
+.pugh-table td{padding:5px 8px;border-bottom:.5px solid var(--bdr);color:var(--txt);vertical-align:middle;text-align:center}
+.pugh-table td:first-child{text-align:left;font-weight:500}
+.pugh-table td:nth-child(2){color:var(--muted);font-size:8px}
+.pugh-table tr.total-row td{background:var(--bg);font-weight:600;border-top:.5px solid var(--bdr)}
+.pugh-plus{color:var(--green);font-weight:600}
+.pugh-minus{color:var(--red);font-weight:600}
+.pugh-zero{color:var(--muted)}
+.idea-card{background:var(--bg);border-radius:6px;padding:9px;margin-bottom:6px;border-left:3px solid var(--bdr)}
+.idea-card.selected-idea{border-left-color:var(--teal)}
+.idea-card.idea2{border-left-color:var(--blue)}
+.idea-card.idea4{border-left-color:var(--amber)}
+.idea-num{font-size:9px;font-weight:500;color:var(--ore);margin-bottom:2px}
+.idea-name{font-size:10px;font-weight:500;color:var(--txt);margin-bottom:3px}
+.idea-desc{font-size:9px;color:var(--muted);line-height:1.45}
+.feas-table{width:100%;border-collapse:collapse;font-size:9px;margin-top:6px}
+.feas-table th{background:var(--bg);padding:5px 8px;text-align:left;font-weight:500;color:var(--muted);border-bottom:.5px solid var(--bdr);width:140px}
+.feas-table td{padding:6px 8px;border-bottom:.5px solid var(--bdr);color:var(--muted);vertical-align:top;line-height:1.5}
+.feas-table tr:last-child th,.feas-table tr:last-child td{border-bottom:none}
+.feas-table th{color:var(--txt);font-weight:500}
+.wm{background:#EEF3FF;border:.5px solid #C5D0F0;border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.wmic{width:32px;height:32px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wmic svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2}
+.wm-ttl{font-size:9px;font-weight:500;color:var(--purpleD);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.wm-txt{font-size:10px;color:var(--purpleD);line-height:1.55}
+.wm-cta{background:var(--purple);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:10px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0}
+.wm-cta svg{width:11px;height:11px;stroke:#fff;fill:none}
+.infog{background:var(--card);border:.5px solid var(--bdr);border-radius:10px;padding:12px;text-align:center}
+.infog-num{font-size:24px;font-weight:500;line-height:1;margin-bottom:3px}
+.infog-lbl{font-size:9px;color:var(--muted);line-height:1.4}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.sc-col{padding:9px;border-radius:7px}
+.sc-bad{background:var(--redL);border-left:3px solid var(--red)}
+.sc-good{background:var(--greenL);border-left:3px solid var(--green)}
+.sc-ttl{font-size:10px;font-weight:500;margin-bottom:5px}
+.sc-ttl.bad{color:var(--red)}.sc-ttl.good{color:var(--green)}
+.sc-row{display:flex;justify-content:space-between;font-size:9px;padding:2px 0;border-bottom:.5px solid rgba(0,0,0,.07)}
+.sc-row:last-child{border-bottom:none;font-weight:500;font-size:10px;padding-top:5px}
+.sc-l{color:var(--muted)}.sc-v{font-weight:500}
+.sc-v.bad{color:var(--red)}.sc-v.good{color:var(--green)}
+.roi-outs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.roi-out{background:var(--bg);border-radius:7px;padding:9px;text-align:center}
+.roi-out-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.roi-out-val{font-size:20px;font-weight:500}
+.roi-out-sub{font-size:8px;color:var(--muted)}
+.flow3{display:grid;grid-template-columns:1fr 20px 1fr 20px 1fr;align-items:center;gap:0;margin-bottom:9px}
+.fbox{background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:10px;text-align:center}
+.fic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px}
+.fic svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.flbl{font-size:10px;font-weight:500;margin-bottom:2px}
+.fsub{font-size:9px;color:var(--muted);line-height:1.4}
+.farr{text-align:center;font-size:18px;opacity:.3;color:var(--txt)}
+.ev-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px}
+.ev{background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:10px}
+.ev-ttl{font-size:10px;font-weight:500;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.ev-bar{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin:2px 0}
+.ev-fill{height:100%;border-radius:3px}
+.ev-txt{font-size:9px;color:var(--muted);line-height:1.5}
+.snum{font-size:13px;font-weight:500}.sdenom{font-size:9px;color:var(--muted)}
+.stars{display:flex;gap:2px;margin-bottom:4px}
+.star{width:10px;height:10px;fill:var(--amber)}
+.star.empty{fill:#EEF0F2}
+.stk-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.stk-tab{padding:7px 14px;border:.5px solid var(--bdr);border-radius:20px;font-size:10px;font-weight:500;color:var(--muted);background:var(--card);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px}
+.stk-tab:hover{border-color:var(--purple);color:var(--purple)}
+.stk-tab.active{background:var(--purpleL);border-color:var(--purple);color:var(--purpleD)}
+.stk-tab svg{width:11px;height:11px;stroke:currentColor;fill:none;flex-shrink:0}
+.tab-c{display:none}.tab-c.active{display:block}
+.pcard{background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:12px;margin-bottom:8px}
+.phead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.pname{font-size:11px;font-weight:500}.prole{font-size:9px;color:var(--muted)}
+.pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.pf label{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:1px}
+.pf p{font-size:9px;color:var(--txt);line-height:1.4}
+.day-g{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:4px}
+.day{border-radius:5px;padding:6px;text-align:center}
+.day-n{font-size:8px;font-weight:500;margin-bottom:2px}
+.day-t{font-size:8px;color:var(--txt);line-height:1.35}
+.rec-list{display:flex;flex-direction:column;gap:6px}
+.rec{display:flex;gap:8px;padding:8px;border-radius:7px}
+.rec-n{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:500;flex-shrink:0}
+.rec-ttl{font-size:10px;font-weight:500;margin-bottom:2px}
+.rec-txt{font-size:9px;line-height:1.5}
+.fn{font-size:9px;color:var(--muted);text-align:center;padding:7px 0 0;border-top:.5px solid var(--bdr);margin-top:10px}
+.pill{display:inline-block;font-size:8px;font-weight:500;padding:2px 6px;border-radius:8px;text-transform:uppercase;letter-spacing:.4px}
+.pill-green{background:#D1FAE5;color:#065F46}
+.pill-amber{background:#FEF3C7;color:#92400E}
+.pill-red{background:#FEE2E2;color:#991B1B}
+.pill-blue{background:#DBEAFE;color:#1E40AF}
+.pill-teal{background:#CCFBF1;color:#134E4A}
+.pill-gray{background:#F3F4F6;color:#374151}
+.wtbl{width:100%;border-collapse:collapse;font-size:10px}
+.wtbl th{font-size:8px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding:4px 8px;border-bottom:.5px solid var(--bdr);text-align:left}
+.wtbl td{padding:6px 8px;border-bottom:.5px solid var(--bdr);color:var(--txt);vertical-align:middle}
+.wtbl tr:last-child td{border-bottom:none}
+.wtbl tr:hover td{background:var(--bg)}
+.w-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;flex-shrink:0}
+.skill-mini{display:flex;align-items:center;gap:3px}
+.skill-mini-bar{width:32px;height:4px;background:#EEF0F2;border-radius:2px;overflow:hidden}
+.skill-mini-fill{height:100%;border-radius:2px;background:var(--ore)}
+.pipeline-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pipeline-lbl{font-size:10px;color:var(--muted);width:160px;flex-shrink:0}
+.pipeline-trk{flex:1;height:22px;background:#EEF0F2;border-radius:4px;overflow:hidden}
+.pipeline-fill{height:100%;background:var(--amber);border-radius:4px;display:flex;align-items:center;padding-left:8px}
+.pipeline-fill span{font-size:9px;font-weight:500;color:var(--navy)}
+.pipeline-pct{font-size:9px;color:var(--muted);width:30px;text-align:right;flex-shrink:0}
+.bc-kpi{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.bc-kpi-card{background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:12px;text-align:center}
+.bc-kpi-val{font-size:28px;font-weight:500;line-height:1;margin-bottom:2px}
+.bc-kpi-lbl{font-size:9px;color:var(--muted)}
+.day-detail{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.dd-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--bdr)}
+.dd-row:last-child{border-bottom:none}
+.dd-day{font-size:9px;color:var(--muted);width:36px;flex-shrink:0}
+.dd-name{font-size:10px;font-weight:500;flex:1}
+.dd-bar-wrap{width:120px;display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.dd-bar-row{display:flex;align-items:center;gap:4px}
+.dd-bar-row span{font-size:8px;color:var(--muted);width:28px}
+.dd-bar-trk{flex:1;height:5px;background:#EEF0F2;border-radius:3px;overflow:hidden}
+.dd-bar-fill{height:100%;border-radius:3px}
+.redeployment-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px}
+.roster-panel{background:var(--card);border:.5px solid var(--bdr);border-radius:10px;overflow:hidden}
+.rp-head{padding:10px 13px;border-bottom:.5px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.rp-title{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;color:var(--txt)}
+.rp-filters{display:flex;gap:5px;padding:7px 13px;border-bottom:.5px solid var(--bdr);flex-wrap:wrap}
+.rp-filters input,.rp-filters select{background:var(--bg);border:.5px solid var(--bdr);color:var(--txt);padding:4px 7px;font-family:inherit;font-size:9px;border-radius:4px;outline:none}
+.roster-body{max-height:460px;overflow-y:auto}
+.roster-row{display:flex;align-items:center;gap:8px;padding:7px 13px;border-bottom:.5px solid var(--bdr);cursor:pointer;transition:background .1s}
+.roster-row:hover{background:var(--bg)}
+.roster-row.sel{background:#EEF3FF;border-left:2px solid var(--purple)}
+.roster-row:last-child{border-bottom:none}
+.assess-panel{background:var(--card);border:.5px solid var(--bdr);border-radius:10px;overflow:hidden}
+.ap-head{padding:10px 13px;border-bottom:.5px solid var(--bdr);background:var(--bg);display:flex;align-items:center;justify-content:space-between}
+.ap-body{padding:14px;overflow-y:auto;max-height:520px}
+.skill-bar-ap{height:5px;background:#EEF0F2;border-radius:3px;overflow:hidden}
+.skill-bar-ap-fill{height:100%;background:var(--ore);border-radius:3px}
+.pathway-card{background:var(--bg);border:.5px solid var(--bdr);border-radius:7px;padding:9px;margin-bottom:6px;display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center}
+.pathway-card.top{border-color:var(--ore);background:var(--oreL)}
+.p-rank{width:28px;height:28px;border-radius:5px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--ore);flex-shrink:0}
+.pathway-card.top .p-rank{background:var(--ore);color:#fff}
+.p-ttl{font-size:10px;font-weight:500;color:var(--txt);margin-bottom:2px}
+.p-desc{font-size:9px;color:var(--muted);line-height:1.4}
+.p-gap{font-size:8px;color:var(--amberD);margin-top:3px}
+.p-pct{font-size:16px;font-weight:500;color:var(--ore);text-align:right}
+.p-lbl{font-size:8px;color:var(--muted);text-align:right}
+.assign-btn{background:var(--teal);color:#fff;border:none;border-radius:5px;padding:5px 10px;font-size:9px;font-weight:500;cursor:pointer;font-family:inherit;margin-right:5px}
+.flag-btn{background:var(--bg);color:var(--txt);border:.5px solid var(--bdr);border-radius:5px;padding:5px 10px;font-size:9px;font-weight:500;cursor:pointer;font-family:inherit}
+</style>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Kumba Iron Ore — Autonomous Haul Transition Dashboard</h2>
+<div class="dash">
+  <div class="sidebar">
+    <div class="logo-area">
+      <div style="display:flex;align-items:center;gap:8px">
+        <svg width="32" height="32" viewBox="0 0 32 32"><polygon points="16,3 29,10 29,22 16,29 3,22 3,10" fill="#6B4EE6" opacity=".9"/><circle cx="16" cy="16" r="4.5" fill="#fff" opacity=".9"/><circle cx="9.5" cy="12" r="2.8" fill="#18A876" opacity=".85"/><circle cx="22.5" cy="12" r="2.8" fill="#F5A623" opacity=".85"/></svg>
+        <div><div class="brand-name">VANDKS-B<br>Command Centre</div><div class="brand-tag">Kumba · Sishen · Live</div></div>
+      </div>
+    </div>
+    <nav>
+      <div class="ns">Overview</div>
+      <div class="ni active" onclick="gotoPage('overview',this)"><svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Overview</div>
+      <div class="ns">Workforce</div>
+      <div class="ni" onclick="gotoPage('workers',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Workers</div>
+      <div class="ni" onclick="gotoPage('bootcamp',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Bootcamp</div>
+      <div class="ni" onclick="gotoPage('redeployment',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>Redeployment</div>
+      <div class="ns">Business case</div>
+      <div class="ni" onclick="gotoPage('roi',this)"><svg viewBox="0 0 24 24" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>ROI calculator</div>
+      <div class="ni" onclick="gotoPage('risk',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>Risk analysis</div>
+      <div class="ns">Solution</div>
+      <div class="ni" onclick="gotoPage('bridge',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M3 17l4-4 4 4 4-4 4 4"/><line x1="3" y1="21" x2="21" y2="21"/></svg>Gap to solution</div>
+      <div class="ni" onclick="gotoPage('eval',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Platform evaluation</div>
+      <div class="ns">People</div>
+      <div class="ni" onclick="gotoPage('stakeholders',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Stakeholders</div>
+      <div class="ni" onclick="gotoPage('recommendations',this)"><svg viewBox="0 0 24 24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Recommendations</div>
+    </nav>
+    <div class="sa"><div class="sa-t">About</div><div class="sa-b">Autonomous haul transition tracker for Kumba Sishen. Connects workforce data, bootcamp outcomes, and redeployment pathways to protect the social licence to operate.</div></div>
+    <div class="su"><div class="su-dot"></div>Updated 20 May 2025 · 10:30</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><div class="tb-title" id="tb-title">Overview <span style="color:var(--muted);font-weight:400;font-size:12px">| Autonomous Haul Transition</span></div><div class="tb-sub" id="tb-sub">Survey data from 72 affected workers at Kumba Sishen.</div></div>
+      <div class="tb-r">
+        <div class="ctrl"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><select><option>All Time</option><option>2025</option></select></div>
+        <div class="ctrl"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><select><option>All</option><option>Northern Cape</option></select></div>
+        <button class="exp"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+    <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="krow">
+        <div class="kcard"><div class="kcirc" style="background:#7B5FF0"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div><div><div class="klbl">Total respondents</div><div class="kval">72</div><div class="ksub">Affected workers surveyed</div></div></div>
+        <div class="kcard"><div class="kcirc" style="background:#18A876"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div class="klbl">Completion rate</div><div class="kval">78%</div><div class="ksub">Completed all sections</div></div></div>
+        <div class="kcard"><div class="kcirc" style="background:#F5A623"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div><div class="klbl">Overall CSF readiness</div><div class="kval">56%</div><div class="ksub">Average across all CSFs</div></div></div>
+        <div class="kcard"><div class="kcirc" style="background:#E8622A"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div><div class="klbl">Top priority gap</div><div class="kval sm">Skills &amp;<br>Employability</div><div class="ksub">Largest negative gap</div></div></div>
+        <div class="kcard"><div class="kcirc" style="background:#2B7BE0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><div><div class="klbl">Top solution path</div><div class="kval sm">Capacity Building<br>&amp; Opportunities</div><div class="ksub">Employee-centred approach</div></div></div>
+      </div>
+      <div class="mgrid">
+        <div class="card">
+          <div class="ct">CSF Dimension Scores <span class="idot">i</span></div>
+          <div style="font-size:8px;color:var(--muted);margin-bottom:7px">% Positive Response (Agree/Strongly Agree)</div>
+          <div id="csf-bars-ov"></div>
+          <div class="ax"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+          <button class="vbtn" onclick="gotoPage('bridge',document.querySelectorAll('.ni')[7])">View full CSF breakdown</button>
+        </div>
+        <div class="card">
+          <div class="ct">Gap Analysis <span class="idot">i</span><span style="font-size:8px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(Current vs Desired State)</span></div>
+          <div class="gleg"><span><span class="lsq" style="background:#162032"></span>Current state</span><span><span class="lsq" style="background:#85B7EB"></span>Desired state</span><span><span class="lsq" style="background:#E8622A;opacity:.8"></span>Gap</span></div>
+          <div style="position:relative;height:195px"><canvas id="gapChart"></canvas></div>
+          <button class="vbtn" onclick="gotoPage('bridge',document.querySelectorAll('.ni')[7])">Explore gap details</button>
+        </div>
+        <div class="card">
+          <div class="ct">Top Gap Drivers <span class="idot">i</span></div>
+          <div style="font-size:8px;color:var(--muted);margin-bottom:5px">What workers told us</div>
+          <div class="dr"><div class="dcirc" style="background:#F5A623"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div><div style="flex:1"><div class="dnm">Lack of quality job opportunities</div><div class="dsub">Agree / Strongly Agree</div></div><div class="dpct">68%</div></div>
+          <div class="dr"><div class="dcirc" style="background:#18A876"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><div style="flex:1"><div class="dnm">Insufficient skills for new roles</div><div class="dsub">Agree / Strongly Agree</div></div><div class="dpct">64%</div></div>
+          <div class="dr"><div class="dcirc" style="background:#E8622A"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div style="flex:1"><div class="dnm">Limited access to funding</div><div class="dsub">Agree / Strongly Agree</div></div><div class="dpct">61%</div></div>
+          <div class="dr"><div class="dcirc" style="background:#7B5FF0"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div style="flex:1"><div class="dnm">Excluded from decisions</div><div class="dsub">Agree / Strongly Agree</div></div><div class="dpct">57%</div></div>
+          <div class="dr"><div class="dcirc" style="background:#2B7BE0"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div style="flex:1"><div class="dnm">Safety concerns unaddressed</div><div class="dsub">Agree / Strongly Agree</div></div><div class="dpct">54%</div></div>
+          <button class="vbtn" onclick="gotoPage('risk',document.querySelectorAll('.ni')[6])">View all drivers</button>
+        </div>
+        <div class="card">
+          <div class="ct">Respondent Profile <span class="idot">i</span></div>
+          <div style="margin-bottom:8px">
+            <div class="prof-lbl">Age group</div>
+            <canvas id="ageDonut" style="width:64px;height:64px;display:block;margin:0 auto 4px"></canvas>
+            <div class="lgnd"><span><span class="ld" style="background:#6B4EE6"></span>15–19 (18%)</span><span><span class="ld" style="background:#9B89F5"></span>20–24 (32%)</span><span><span class="ld" style="background:#C4B8FA"></span>25–29 (33%)</span><span><span class="ld" style="background:#E0D9FD"></span>30–35 (12%)</span><span><span class="ld" style="background:#F1EEFF"></span>36+ (5%)</span></div>
+          </div>
+          <div style="margin-bottom:6px"><div class="prof-lbl">Location</div><div style="font-size:9px;color:var(--muted)">Northern Cape · Sishen Mine</div></div>
+          <div><div class="prof-lbl">Roles</div><div style="font-size:9px;color:var(--muted)">Haul Truck Drivers, Dispatchers,<br>Maintenance Helpers, Supervisors</div></div>
+          <button class="vbtn" style="margin-top:7px" onclick="gotoPage('stakeholders',document.querySelectorAll('.ni')[9])">View stakeholder profiles</button>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:9px">
+        <div class="ct">From Survey Insights to Employee-Centred Solution</div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:8px">How worker needs drive the transition programme and the Automation Transparency Platform. <strong style="color:var(--blue)">Click the solution columns to explore details.</strong></div>
+        <div class="bcols">
+          <div class="bcol bc-g"><span class="bct bct-g">Key Gaps (Survey)</span><div class="bi">Skills gap does not match new roles</div><div class="bi">Limited access to retraining</div><div class="bi">Workers excluded from decisions</div><div class="bi">No formal concern-raising channel</div><div class="bi">Weak accountability &amp; feedback</div></div>
+          <div class="barr"><svg viewBox="0 0 24 24" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          <div class="bcol bc-p" id="sol-col-prog" onclick="toggleSolDetail('prog')">
+            <div class="sel-hint"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Click to expand</div>
+            <span class="bct bct-p">Employee-Centred Programme</span>
+            <div class="pstep"><div class="psn">1</div><div><div class="pst">7-day bootcamp + 2-week job shadow</div><div class="psd">Digital literacy, autonomous systems, safety, simulation, role assessment. CAT MineStar training.</div></div></div>
+            <div class="pstep"><div class="psn">2</div><div><div class="pst">Strengthen participation &amp; accountability</div><div class="psd">Formal feedback channels, documented responses, worker voices in planning.</div></div></div>
+          </div>
+          <div class="barr"><svg viewBox="0 0 24 24" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          <div class="bcol bc-s" id="sol-col-plat" onclick="toggleSolDetail('plat')">
+            <div class="sel-hint"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Click to expand</div>
+            <div class="s-star"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <div class="s-ttl">Automation Transparency Platform</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Regular community &amp; worker updates</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Formal concern-raising channel</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>ESG-compliant documented engagement</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Cross-industry redeployment support</div>
+            <div class="s-en">Click to view full solution documentation.</div>
+          </div>
+        </div>
+      </div>
+      <div id="sol-detail-prog" class="sol-detail"></div>
+      <div id="sol-detail-plat" class="sol-detail"></div>
+      <div class="wm"><div class="wmic"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div><div style="flex:1"><div class="wm-ttl">What This Means</div><div class="wm-txt">Survey insights from 72 affected workers show where the biggest gaps are. Implementing the employee-centred programme through the Automation Transparency Platform creates a cycle of opportunity, inclusion and accountability that protects Kumba's social licence to operate during the autonomous haul transition.</div></div><button class="wm-cta" onclick="gotoPage('recommendations',document.querySelectorAll('.ni')[10])">View Recommendations <svg viewBox="0 0 24 24" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></div>
+      <div class="fn">Data is anonymised and aggregated. Results are indicative and for planning purposes only.</div>
+    </div>
+
+    <!-- WORKERS -->
+    <div class="page" id="page-workers">
+      <div class="g4" style="margin-bottom:10px">
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:500;color:var(--ore)">72</div><div style="font-size:9px;color:var(--muted)">Total affected workers</div></div>
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:500;color:var(--green)">14</div><div style="font-size:9px;color:var(--muted)">Retained as operators (1-in-5)</div></div>
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:500;color:var(--amber)">58</div><div style="font-size:9px;color:var(--muted)">Redeployed into new roles</div></div>
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:500;color:var(--red)">0</div><div style="font-size:9px;color:var(--muted)">Retrenched (target)</div></div>
+      </div>
+      <div class="card" style="margin-bottom:9px"><div class="ct">Workforce Transition Pipeline</div><div id="pipeline-bars"></div></div>
+      <div class="card">
+        <div class="ct">Individual Worker View <span style="font-size:8px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400">— click a row for detailed profile</span></div>
+        <div style="margin-bottom:7px;display:flex;gap:6px;flex-wrap:wrap">
+          <input id="w-search" placeholder="Search name or ID..." style="background:var(--bg);border:.5px solid var(--bdr);color:var(--txt);padding:4px 8px;font-family:inherit;font-size:9px;border-radius:4px;outline:none;flex:1;min-width:120px" oninput="filterWorkers()">
+          <select id="w-role" style="background:var(--bg);border:.5px solid var(--bdr);color:var(--txt);padding:4px 8px;font-family:inherit;font-size:9px;border-radius:4px;outline:none" onchange="filterWorkers()"><option value="">All roles</option><option>Haul Truck Driver</option><option>Dispatcher</option><option>Maintenance Helper</option><option>Fuel Bay Operator</option><option>Pit Supervisor</option></select>
+          <select id="w-status" style="background:var(--bg);border:.5px solid var(--bdr);color:var(--txt);padding:4px 8px;font-family:inherit;font-size:9px;border-radius:4px;outline:none" onchange="filterWorkers()"><option value="">All statuses</option><option>Redeployed</option><option>Shadowing</option><option>Training</option><option>Pending</option></select>
+        </div>
+        <div style="overflow-x:auto"><table class="wtbl"><thead><tr><th>Name</th><th>Prev. Role</th><th>Risk</th><th>Score</th><th>D-Lit</th><th>Mech.</th><th>Comm.</th><th>Status</th></tr></thead><tbody id="workers-tbody"></tbody></table></div>
+        <div id="w-modal" style="display:none;margin-top:10px;background:var(--bg);border-radius:8px;padding:12px;border:.5px solid var(--bdr)"></div>
+      </div>
+    </div>
+
+    <!-- BOOTCAMP -->
+    <div class="page" id="page-bootcamp">
+      <div class="bc-kpi"><div class="bc-kpi-card"><div class="bc-kpi-val" style="color:var(--amber)">85%</div><div class="bc-kpi-lbl">Avg Completion</div></div><div class="bc-kpi-card"><div class="bc-kpi-val" style="color:var(--blue)">76%</div><div class="bc-kpi-lbl">Avg Score</div></div></div>
+      <div class="card" style="margin-bottom:9px">
+        <div class="ct">7-Day Bootcamp Performance</div>
+        <div style="position:relative;height:200px"><canvas id="bootcampChart"></canvas></div>
+        <div style="display:flex;gap:12px;margin-top:7px;font-size:9px;color:var(--muted)"><span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--amber);margin-right:3px"></span>Completion %</span><span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#888780;margin-right:3px"></span>Avg Score</span></div>
+      </div>
+      <div class="card"><div class="ct">Module Detail</div><div class="day-detail" id="module-detail"></div></div>
+    </div>
+
+    <!-- REDEPLOYMENT -->
+    <div class="page" id="page-redeployment">
+      <div class="g4" style="margin-bottom:10px">
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px"><div style="font-size:9px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--ore);display:inline-block"></span>Total affected operators</div><div style="font-size:24px;font-weight:500">72</div></div>
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px"><div style="font-size:9px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block"></span>Matched to pathway</div><div style="font-size:24px;font-weight:500"><span id="kpiMatched">0</span><span style="font-size:12px;color:var(--muted)" id="kpiPct"> / 0%</span></div></div>
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px"><div style="font-size:9px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--amber);display:inline-block"></span>Pending assessment</div><div style="font-size:24px;font-weight:500" id="kpiPending">0</div></div>
+        <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px"><div style="font-size:9px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--red);display:inline-block"></span>Retrenchment risk</div><div style="font-size:24px;font-weight:500" id="kpiRisk">0</div></div>
+      </div>
+      <div class="redeployment-wrap">
+        <div class="roster-panel">
+          <div class="rp-head"><div class="rp-title">Employee Roster</div><span style="font-size:8px;color:var(--muted)" id="roster-chip">0 records</span></div>
+          <div class="rp-filters"><input id="rd-search" placeholder="Name or ID..." oninput="rdFilter()" style="flex:1;min-width:80px"><select id="rd-role" onchange="rdFilter()" style="font-size:9px"><option value="">All roles</option><option>Haul Truck Operator</option><option>Pit Supervisor</option><option>Maintenance Fitter</option></select><select id="rd-status" onchange="rdFilter()" style="font-size:9px"><option value="">All</option><option value="pending">Pending</option><option value="matched">Matched</option><option value="risk">At Risk</option></select></div>
+          <div class="roster-body" id="rd-roster"></div>
+        </div>
+        <div class="assess-panel">
+          <div class="ap-head"><div style="font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.5px">Skills Assessment &amp; Recommendation</div><span style="font-size:8px;color:var(--muted)" id="assess-chip">No employee selected</span></div>
+          <div class="ap-body" id="rd-assess"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--muted)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg><div style="font-size:11px;font-weight:500;margin-top:10px;color:var(--txt)">No operator selected</div><div style="font-size:10px;margin-top:4px">Select an employee from the roster to view their skills profile and redeployment recommendation.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROI -->
+    <div class="page" id="page-roi">
+      <div class="g3" style="grid-template-columns:repeat(3,1fr)"><div class="infog" style="border-left:3px solid var(--red)"><div class="infog-num" style="color:var(--red)">R180M+</div><div class="infog-lbl">Cost of a single major strike or work stoppage</div></div><div class="infog" style="border-left:3px solid var(--amber)"><div class="infog-num" style="color:var(--amber)">R28M</div><div class="infog-lbl">Estimated 3-year platform &amp; training investment</div></div><div class="infog" style="border-left:3px solid var(--green)"><div class="infog-num" style="color:var(--green)">6.4×</div><div class="infog-lbl">Minimum ROI if one disruption is prevented</div></div></div>
+      <div class="card" style="margin-bottom:9px"><div class="ct">Scenario comparison</div><div class="sc-grid"><div class="sc-col sc-bad"><div class="sc-ttl bad">Without platform</div><div class="sc-row"><div class="sc-l">Automation savings</div><div class="sc-v">+R240M/yr</div></div><div class="sc-row"><div class="sc-l">Retrenchment packages</div><div class="sc-v bad">-R45M</div></div><div class="sc-row"><div class="sc-l">Strike / stoppage</div><div class="sc-v bad">-R180M</div></div><div class="sc-row"><div class="sc-l">Legal &amp; fines</div><div class="sc-v bad">-R22M</div></div><div class="sc-row"><div class="sc-l">Net 3-year outcome</div><div class="sc-v bad">-R72M</div></div></div><div class="sc-col sc-good"><div class="sc-ttl good">With platform</div><div class="sc-row"><div class="sc-l">Automation savings</div><div class="sc-v">+R240M/yr</div></div><div class="sc-row"><div class="sc-l">Platform &amp; training cost</div><div class="sc-v bad">-R28M</div></div><div class="sc-row"><div class="sc-l">Strike risk (mitigated)</div><div class="sc-v good">R0–R40M</div></div><div class="sc-row"><div class="sc-l">Legal fines avoided</div><div class="sc-v good">+R22M</div></div><div class="sc-row"><div class="sc-l">Net 3-year outcome</div><div class="sc-v good">+R267M</div></div></div></div></div>
+      <div class="card"><div class="ct">Interactive ROI model</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 10px"><div><div style="font-size:9px;color:var(--muted);margin-bottom:3px">Disruption cost (R million)</div><input type="range" min="50" max="500" value="180" step="10" id="dc" oninput="calcROI()"><div style="font-size:10px;margin-top:1px">R<span id="dc-v">180</span>M</div></div><div><div style="font-size:9px;color:var(--muted);margin-bottom:3px">Platform &amp; training budget (R million)</div><input type="range" min="10" max="80" value="28" step="1" id="pc" oninput="calcROI()"><div style="font-size:10px;margin-top:1px">R<span id="pc-v">28</span>M</div></div><div><div style="font-size:9px;color:var(--muted);margin-bottom:3px">Probability disruption prevented (%)</div><input type="range" min="20" max="95" value="70" step="5" id="pb" oninput="calcROI()"><div style="font-size:10px;margin-top:1px"><span id="pb-v">70</span>%</div></div><div><div style="font-size:9px;color:var(--muted);margin-bottom:3px">Annual smooth-rollout gain (R million)</div><input type="range" min="10" max="100" value="33" step="1" id="gn" oninput="calcROI()"><div style="font-size:10px;margin-top:1px">R<span id="gn-v">33</span>M/yr</div></div></div><div class="roi-outs"><div class="roi-out"><div class="roi-out-lbl">Expected value saved</div><div class="roi-out-val" style="color:var(--green)" id="ev-s">R126M</div><div class="roi-out-sub">disruption cost × probability</div></div><div class="roi-out"><div class="roi-out-lbl">Net benefit (3 years)</div><div class="roi-out-val" style="color:var(--teal)" id="nb">R197M</div><div class="roi-out-sub">saved + gains – cost</div></div><div class="roi-out"><div class="roi-out-lbl">Return on investment</div><div class="roi-out-val" style="color:var(--blue)" id="roi-r">7.0×</div><div class="roi-out-sub">net benefit ÷ cost</div></div></div></div>
+      <div class="fn">Estimates based on SA mining industry benchmarks. For planning purposes only.</div>
+    </div>
+
+    <!-- RISK -->
+    <div class="page" id="page-risk">
+      <div class="g4"><div class="infog" style="border-top:3px solid var(--red)"><div class="infog-num" style="color:var(--red)">31.4%</div><div class="infog-lbl">National unemployment (2026)</div></div><div class="infog" style="border-top:3px solid var(--ore)"><div class="infog-num" style="color:var(--ore)">43.8%</div><div class="infog-lbl">Youth unemployment (2026)</div></div><div class="infog" style="border-top:3px solid var(--amber)"><div class="infog-num" style="color:var(--amber)">10×</div><div class="infog-lbl">Dependants per displaced worker</div></div><div class="infog" style="border-top:3px solid var(--purple)"><div class="infog-num" style="color:var(--purple)">50yr</div><div class="infog-lbl">NUM–Kumba relationship at stake</div></div></div>
+      <div class="card" style="margin-bottom:9px"><div class="ct">Without engagement — risk escalation</div><div class="flow3" style="margin-top:8px"><div class="fbox" style="border-left:3px solid var(--amber)"><div class="fic" style="background:var(--amberL);color:var(--amberD)"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg></div><div class="flbl">Automation announced</div><div class="fsub">No consultation or training plan</div></div><div class="farr">›</div><div class="fbox" style="border-left:3px solid var(--ore)"><div class="fic" style="background:var(--oreL);color:var(--oreD)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="flbl">Rumours spread</div><div class="fsub">Workers fear job loss; unions escalate</div></div><div class="farr">›</div><div class="fbox" style="border-left:3px solid var(--red)"><div class="fic" style="background:var(--redL);color:var(--redD)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div><div class="flbl">Strike action</div><div class="fsub">R180M+ losses. Regulatory scrutiny.</div></div></div></div>
+      <div class="card" style="margin-bottom:9px"><div class="ct">With engagement — mitigation pathway</div><div class="flow3" style="margin-top:8px"><div class="fbox" style="border-left:3px solid var(--teal)"><div class="fic" style="background:var(--tealL);color:var(--tealD)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="flbl">Early announcement</div><div class="fsub">Training plan &amp; feedback channels in place</div></div><div class="farr">›</div><div class="fbox" style="border-left:3px solid var(--blue)"><div class="fic" style="background:var(--blueL);color:var(--blueD)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div><div class="flbl">Concerns addressed</div><div class="fsub">Platform documents &amp; responds to issues</div></div><div class="farr">›</div><div class="fbox" style="border-left:3px solid var(--green)"><div class="fic" style="background:var(--greenL);color:var(--greenD)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="flbl">Trust maintained</div><div class="fsub">Automation proceeds. Social licence intact.</div></div></div></div>
+      <div class="g2"><div class="card"><div class="ct">Social licence risk factors</div><div id="risk-bars"></div></div><div class="card"><div class="ct">Legal &amp; compliance exposure</div><div class="dr"><div class="dcirc" style="background:#2B7BE0"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div style="flex:1"><div class="dnm">Labour Relations Act — exhaust retraining first</div></div><div style="font-size:9px;color:var(--red);font-weight:500">High</div></div><div class="dr"><div class="dcirc" style="background:#7B5FF0"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div style="flex:1"><div class="dnm">Mining Charter — skills development obligations</div></div><div style="font-size:9px;color:var(--red);font-weight:500">High</div></div><div class="dr"><div class="dcirc" style="background:#18A876"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div><div style="flex:1"><div class="dnm">King V — stakeholder engagement &amp; ESG</div></div><div style="font-size:9px;color:var(--amber);font-weight:500">Med</div></div><div class="dr"><div class="dcirc" style="background:#F5A623"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div style="flex:1"><div class="dnm">OHSA — employer duty for safe work environment</div></div><div style="font-size:9px;color:var(--amber);font-weight:500">Med</div></div></div></div>
+    </div>
+
+    <!-- BRIDGE -->
+    <div class="page" id="page-bridge">
+      <div class="card" style="margin-bottom:9px">
+        <div class="ct">Gap to solution — full detail</div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:8px">How survey gaps map to programme actions and platform features. <strong style="color:var(--blue)">Click the solution columns to explore full documentation.</strong></div>
+        <div class="bcols">
+          <div class="bcol bc-g"><span class="bct bct-g">Key gaps (survey)</span><div class="bi">Skills gap does not match automation roles</div><div class="bi">Limited retraining opportunities</div><div class="bi">Workers excluded from decisions</div><div class="bi">No formal concern-raising channel</div><div class="bi">Accountability and feedback absent</div><div class="bi">Poor management communication</div></div>
+          <div class="barr"><svg viewBox="0 0 24 24" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          <div class="bcol bc-p" id="sol-col-prog2" onclick="toggleSolDetail2('prog')">
+            <div class="sel-hint"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Click to expand</div>
+            <span class="bct bct-p">Employee-Centred Programme</span>
+            <div class="pstep"><div class="psn">1</div><div><div class="pst">7-day bootcamp + 2-week job shadow</div><div class="psd">Digital literacy, autonomous systems, safety, simulation, role assessment.</div></div></div>
+            <div class="pstep"><div class="psn">2</div><div><div class="pst">Strengthen participation &amp; accountability</div><div class="psd">Formal feedback loops. Documented responses. Worker voices in planning.</div></div></div>
+          </div>
+          <div class="barr"><svg viewBox="0 0 24 24" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          <div class="bcol bc-s" id="sol-col-plat2" onclick="toggleSolDetail2('plat')">
+            <div class="sel-hint"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Click to expand</div>
+            <div class="s-star"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <div class="s-ttl">Automation Transparency Platform</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Structured training pathways for transition roles</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Regular updates via WhatsApp, SMS, forums</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Formal concern channel with documented responses</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>ESG-compliant records for King V reporting</div>
+            <div class="schk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Cross-industry redeployment with SETA partners</div>
+          </div>
+        </div>
+      </div>
+      <div id="sol-detail-prog2" class="sol-detail"></div>
+      <div id="sol-detail-plat2" class="sol-detail"></div>
+      <div class="wm"><div class="wmic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div style="flex:1"><div class="wm-ttl">Platform logic: input → process → output</div><div class="wm-txt">Input: Workers engage via existing channels; concerns submitted formally; training commences. Process: Platform tracks engagement, documents responses, monitors trust indicators. Output: Workers retain employment in new roles; social licence protected; automation proceeds on schedule.</div></div></div>
+    </div>
+
+    <!-- EVALUATION -->
+    <div class="page" id="page-eval">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:9px">Each criterion scored 1–5 based on the VANDKS-B Pugh Method evaluation. Idea 3 (Training &amp; Upskilling, Pugh score +0.70) was the selected solution, ahead of Idea 2 (Cross-industry redeployment, +0.68) and Idea 4 (Scheduled FSD trucks).</div>
+      <div class="ev-g" id="eval-grid"></div>
+      <div class="card" style="margin-bottom:9px"><div class="ct">Overall score</div><div style="display:flex;align-items:center;gap:14px;margin-top:5px"><div style="text-align:center"><div style="font-size:28px;font-weight:500;color:var(--teal)">22.5</div><div style="font-size:9px;color:var(--muted)">out of 30</div></div><div style="flex:1;min-width:160px"><div style="height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-bottom:5px"><div style="height:100%;width:75%;background:var(--teal);border-radius:4px"></div></div><div style="font-size:10px;color:var(--muted);line-height:1.5">Idea 3 scored highest on the Pugh evaluation (+0.70) with particular strength in stakeholder needs, CSFs, governance, and value creation. Safety constraints and feasibility are areas with execution dependency.</div></div></div></div>
+      <div class="card">
+        <div class="ct">Pugh Method Evaluation Matrix — All Ideas Compared</div>
+        <div style="overflow-x:auto">
+          <table class="pugh-table">
+            <thead><tr><th>Criteria</th><th>Weight</th><th>Baseline</th><th>Idea 1<br><span style="font-weight:400;font-size:7px">Automation Dashboard</span></th><th>Idea 2<br><span style="font-weight:400;font-size:7px">Cross-Industry Redeployment</span></th><th style="background:#0F6E50">Idea 3 ✓ Selected<br><span style="font-weight:400;font-size:7px">Upskilling &amp; Training</span></th><th>Idea 4<br><span style="font-weight:400;font-size:7px">Scheduled FSD Trucks</span></th></tr></thead>
+            <tbody>
+              <tr><td>Stakeholder needs</td><td>0.25</td><td class="pugh-zero">0</td><td class="pugh-plus">+1</td><td class="pugh-plus">+1</td><td class="pugh-plus" style="background:#F0FAF5">+1</td><td class="pugh-plus">+1</td></tr>
+              <tr><td>Critical Success Factors</td><td>0.10</td><td class="pugh-zero">0</td><td class="pugh-zero">0</td><td class="pugh-zero">0</td><td class="pugh-plus" style="background:#F0FAF5">+1</td><td class="pugh-zero">0</td></tr>
+              <tr><td>Governance &amp; compliance</td><td>0.15</td><td class="pugh-zero">0</td><td class="pugh-plus">+1</td><td class="pugh-zero">0</td><td class="pugh-plus" style="background:#F0FAF5">+1</td><td class="pugh-plus">+1</td></tr>
+              <tr><td>Safety constraints</td><td>0.15</td><td class="pugh-zero">0</td><td class="pugh-zero">0</td><td class="pugh-minus">-1</td><td class="pugh-zero" style="background:#F0FAF5">0</td><td class="pugh-plus">+1</td></tr>
+              <tr><td>Value creation potential</td><td>0.15</td><td class="pugh-zero">0</td><td class="pugh-zero">0</td><td class="pugh-plus">+1</td><td class="pugh-plus" style="background:#F0FAF5">+1</td><td class="pugh-zero">0</td></tr>
+              <tr><td>Feasibility</td><td>0.10</td><td class="pugh-zero">0</td><td class="pugh-zero">0</td><td class="pugh-zero">0</td><td class="pugh-zero" style="background:#F0FAF5">0</td><td class="pugh-zero">0</td></tr>
+              <tr><td>Sustainability</td><td>0.10</td><td class="pugh-zero">0</td><td class="pugh-plus">+1</td><td class="pugh-plus">+1</td><td class="pugh-zero" style="background:#F0FAF5">0</td><td class="pugh-zero">0</td></tr>
+              <tr class="total-row"><td>Total weighted score</td><td></td><td>0</td><td>—</td><td class="pugh-plus">+0.68</td><td class="pugh-plus" style="background:#E0F5EC">+0.70</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:8px;color:var(--muted);margin-top:6px;display:flex;gap:12px"><span><span class="pugh-plus">+1</span> Exceeds baseline</span><span><span class="pugh-zero">0</span> Meets baseline</span><span><span class="pugh-minus">-1</span> Doesn't meet target</span></div>
+      </div>
+    </div>
+
+    <!-- STAKEHOLDERS -->
+    <div class="page" id="page-stakeholders">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px">Select a stakeholder group below to view their profile and how the solution addresses their needs.</div>
+      <div class="stk-tabs">
+        <div class="stk-tab active" onclick="swTab('t-num',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>NUM (Labour union)</div>
+        <div class="stk-tab" onclick="swTab('t-workers',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Workers</div>
+        <div class="stk-tab" onclick="swTab('t-kumba',this)"><svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Kumba priorities</div>
+        <div class="stk-tab" onclick="swTab('t-community',this)"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Host communities</div>
+      </div>
+      <div class="tab-c active" id="t-num">
+        <div class="pcard"><div class="phead"><div class="pav" style="background:#E3F7F0;color:#0F6E50">NUM</div><div><div class="pname">National Union of Mineworkers (NUM)</div><div class="prole">External stakeholder — labour union representing Sishen &amp; Kolomela workers</div></div></div><div class="pgrid"><div class="pf"><label>Background</label><p>50-year association with Kumba protecting mineworkers. Represents the majority directly affected by automation plans.</p></div><div class="pf"><label>Goals</label><p>Protect members from retrenchment. Negotiate upskilling and retraining so workers transition rather than lose jobs.</p></div><div class="pf"><label>Fears</label><p>Mass unemployment for members. Loss of bargaining power as automation accelerates. Lack of transparent communication from management.</p></div></div></div>
+        <div class="wm"><div class="wmic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="wm-ttl">Platform value for NUM</div><div class="wm-txt">The engagement platform gives NUM a formal, documented channel to raise member concerns and track Kumba's responses. This creates a structured process that reduces the need for confrontational industrial action by proactively addressing disputes before they escalate.</div></div></div>
+      </div>
+      <div class="tab-c" id="t-workers">
+        <div class="g4" style="margin-bottom:9px">
+          <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px;text-align:center"><div style="font-size:20px;font-weight:500;color:var(--ore)">72</div><div style="font-size:9px;color:var(--muted)">Total affected workers</div></div>
+          <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px;text-align:center"><div style="font-size:20px;font-weight:500;color:var(--green)">18</div><div style="font-size:9px;color:var(--muted)">Redeployed</div></div>
+          <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px;text-align:center"><div style="font-size:20px;font-weight:500;color:var(--amber)">24</div><div style="font-size:9px;color:var(--muted)">Pending review</div></div>
+          <div style="background:var(--card);border:.5px solid var(--bdr);border-radius:9px;padding:11px;text-align:center"><div style="font-size:20px;font-weight:500;color:var(--red)">11</div><div style="font-size:9px;color:var(--muted)">Needs coaching</div></div>
+        </div>
+        <div class="card" style="margin-bottom:9px"><div class="ct">Workforce Transition Pipeline</div><div id="stk-pipeline"></div></div>
+        <div class="card">
+          <div class="ct">Individual Worker View <span style="font-size:8px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400">— click a row for detailed profile</span></div>
+          <div style="margin-bottom:7px;display:flex;gap:6px;flex-wrap:wrap">
+            <input id="stk-w-search" placeholder="Search name or ID..." style="background:var(--bg);border:.5px solid var(--bdr);color:var(--txt);padding:4px 8px;font-family:inherit;font-size:9px;border-radius:4px;outline:none;flex:1;min-width:120px" oninput="filterStkWorkers()">
+            <select id="stk-w-role" style="background:var(--bg);border:.5px solid var(--bdr);color:var(--txt);padding:4px 8px;font-family:inherit;font-size:9px;border-radius:4px;outline:none" onchange="filterStkWorkers()"><option value="">All roles</option><option>Haul Truck Driver</option><option>Dispatcher</option><option>Maintenance Helper</option><option>Fuel Bay Operator</option><option>Pit Supervisor</option></select>
+            <select id="stk-w-status" style="background:var(--bg);border:.5px solid var(--bdr);color:var(--txt);padding:4px 8px;font-family:inherit;font-size:9px;border-radius:4px;outline:none" onchange="filterStkWorkers()"><option value="">All statuses</option><option>Redeployed</option><option>Shadowing</option><option>Training</option><option>Pending</option></select>
+          </div>
+          <div style="overflow-x:auto"><table class="wtbl"><thead><tr><th>Name</th><th>Prev. Role</th><th>Risk</th><th>Score</th><th>D-Lit</th><th>Mech.</th><th>Comm.</th><th>Status</th></tr></thead><tbody id="stk-workers-tbody"></tbody></table></div>
+          <div id="stk-w-modal" style="display:none;margin-top:10px;background:var(--bg);border-radius:8px;padding:12px;border:.5px solid var(--bdr)"></div>
+        </div>
+      </div>
+      <div class="tab-c" id="t-kumba">
+        <div class="g2">
+          <div class="card"><div class="ct" style="color:var(--blue)">Kumba priorities</div><div class="dr"><div class="dcirc" style="background:#2B7BE0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42"/></svg></div><div class="dnm">Operational efficiency — CAT MineStar autonomous haul trucks</div></div><div class="dr"><div class="dcirc" style="background:#18A876"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="dnm">Zero-harm safety — automation reduces human exposure to hazards</div></div><div class="dr"><div class="dcirc" style="background:#4CAF50"><svg viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg></div><div class="dnm">GHG reduction — autonomous vehicles reduce fuel waste</div></div><div class="dr"><div class="dcirc" style="background:#7B5FF0"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div><div class="dnm">King V governance and stakeholder accountability</div></div></div>
+          <div class="card"><div class="ct" style="color:var(--ore)">Kumba constraints</div><div class="dr"><div class="dcirc" style="background:var(--ore)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div><div class="dnm">Social licence — job losses in host communities threaten operations</div></div><div class="dr"><div class="dcirc" style="background:var(--red)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="dnm">Cost discipline — cannot absorb expensive initiatives without clear ROI</div></div><div class="dr"><div class="dcirc" style="background:var(--amber)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div class="dnm">Labour Relations Act — must exhaust all alternatives before retrenchment</div></div></div>
+        </div>
+      </div>
+      <div class="tab-c" id="t-community">
+        <div class="g2">
+          <div style="padding:10px;background:var(--tealL);border-radius:8px;border-left:3px solid var(--teal)"><div style="font-size:10px;font-weight:500;color:var(--tealD);margin-bottom:3px">Economic inclusion</div><div style="font-size:9px;color:var(--tealD);line-height:1.5">Each displaced worker supports up to 10 dependants. Northern Cape communities (Siyamthemba and Kathu) depend heavily on Kumba employment and expect continued localised preferential procurement.</div></div>
+          <div style="padding:10px;background:var(--blueL);border-radius:8px;border-left:3px solid var(--blue)"><div style="font-size:10px;font-weight:500;color:var(--blueD);margin-bottom:3px">Transparent communication</div><div style="font-size:9px;color:var(--blueD);line-height:1.5">Communities need direct, regular updates on automation plans and timelines. Rumours and silence fuel unrest. The platform must proactively communicate — not wait for communities to ask.</div></div>
+          <div style="padding:10px;background:var(--amberL);border-radius:8px;border-left:3px solid var(--amber)"><div style="font-size:10px;font-weight:500;color:var(--amberD);margin-bottom:3px">Formal feedback channels</div><div style="font-size:9px;color:var(--amberD);line-height:1.5">Communities need a structured way to raise concerns and receive documented responses — not just consultation workshops. Continuous, accessible engagement that creates real accountability.</div></div>
+          <div style="padding:10px;background:var(--purpleL);border-radius:8px;border-left:3px solid var(--purple)"><div style="font-size:10px;font-weight:500;color:var(--purpleD);margin-bottom:3px">Youth opportunity pathways</div><div style="font-size:9px;color:var(--purpleD);line-height:1.5">43.8% youth unemployment. Host communities need pathways for young people into automation-support roles — or Kumba risks a new generation of resentment. Cross-industry redeployment must not send workers to geographically distant areas.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="page" id="page-recommendations">
+      <div class="card"><div class="ct">Priority actions for management</div><div class="rec-list" id="rec-list"></div></div>
+      <div class="fn">All financial estimates are indicative. VANDKS-B recommends commissioning a full financial modelling exercise before board sign-off.</div>
+    </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ─── Navigation ───────────────────────────────────────────────────────────────
+const PAGES={overview:'Overview | Autonomous Haul Transition',workers:'Workers | Transition Pipeline',bootcamp:'Bootcamp | 7-Day Training Performance',redeployment:'Redeployment | Skills Matching Console',roi:'ROI Calculator | Business Case',risk:'Risk Analysis | Disruption Scenarios',bridge:'Gap to Solution | Employee-Centred Programme',eval:'Platform Evaluation | Solution Assessment',stakeholders:'Stakeholders | People & Priorities',recommendations:'Recommendations | Priority Actions'};
+const SUBS={overview:'Survey data from 72 affected workers at Kumba Sishen.',workers:'Track individual progress, placements, and coaching needs across all 72 affected workers.',bootcamp:'7-day training programme progress and module breakdown.',redeployment:'Redeployment pathway matching for Sishen autonomous-haul transition operators.',roi:'Financial case for people-inclusive automation at Kumba Iron Ore.',risk:'What happens if Kumba proceeds without stakeholder engagement.',bridge:'How worker survey gaps flow into the employee-centred programme and Automation Transparency Platform.',eval:'Assessment of the VANDKS-B solution using the Pugh Method (Idea 3 selected, weighted score +0.70).',stakeholders:'Select a stakeholder group to view their profile.',recommendations:'Priority actions for Kumba board and senior management.'};
+
+function gotoPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('tb-title').innerHTML=(PAGES[id]||'').replace('|','<span style="color:var(--muted);font-weight:400;font-size:12px">|')+'</span>';
+  document.getElementById('tb-sub').textContent=SUBS[id]||'';
+  if(id==='recommendations') renderRecs();
+  if(id==='bootcamp') setTimeout(initBootcamp,100);
+  if(id==='workers') renderWorkerTable('workers-tbody','w-search','w-role','w-status','w-modal');
+  if(id==='redeployment') initRedeployment();
+  if(id==='eval') renderEval();
+}
+function swTab(id,el){
+  const parent=el.closest('.page');
+  parent.querySelectorAll('.tab-c').forEach(t=>t.classList.remove('active'));
+  parent.querySelectorAll('.stk-tab').forEach(b=>b.classList.remove('active'));
+  const tc=document.getElementById(id);
+  if(tc) tc.classList.add('active');
+  el.classList.add('active');
+  if(id==='t-workers'){renderPipelineBars('stk-pipeline');renderWorkerTable('stk-workers-tbody','stk-w-search','stk-w-role','stk-w-status','stk-w-modal');}
+}
+
+// ─── Overview charts ──────────────────────────────────────────────────────────
+const csfData=[{label:'Education & Skills Dev.',pct:62,color:'#4CAF50'},{label:'Employability & Econ. Opps.',pct:49,color:'#F5A623'},{label:'Access to Resources',pct:45,color:'#F5A623'},{label:'Leadership & Participation',pct:58,color:'#4CAF50'},{label:'Health & Wellbeing',pct:52,color:'#4CAF50'},{label:'Safety & Protection',pct:41,color:'#E8622A'},{label:'Infrastructure & Environ.',pct:48,color:'#F5A623'},{label:'Governance & Accountability',pct:57,color:'#4CAF50'}];
+const csfEl=document.getElementById('csf-bars-ov');
+if(csfEl) csfEl.innerHTML=csfData.map(d=>`<div class="cb-row"><div class="cb-lbl">${d.label}</div><div class="cb-trk"><div class="cb-fill" style="width:${d.pct}%;background:${d.color}"></div></div><div class="cb-pct">${d.pct}%</div></div>`).join('');
+
+const current=[62,49,45,58,52,41,48,57],desired=[82,77,64,80,85,67,66,85];
+const gaps=desired.map((d,i)=>d-current[i]);
+new Chart(document.getElementById('gapChart'),{type:'bar',data:{labels:['Educ.','Employ.','Access','Leader.','Health','Safety','Infra.','Gov.'],datasets:[{label:'Current',data:current,backgroundColor:'#162032',borderWidth:0},{label:'Desired',data:desired,backgroundColor:'#85B7EB',borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888780',font:{size:8},maxRotation:0},grid:{display:false}},y:{min:0,max:100,ticks:{color:'#888780',font:{size:8},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,.05)'}}},animation:{onComplete:function(){const ctx=this.ctx;ctx.save();ctx.font='bold 8px sans-serif';ctx.fillStyle='#E8622A';ctx.textAlign='center';gaps.forEach((g,i)=>{const m=this.getDatasetMeta(1);if(m.data[i]) ctx.fillText('+'+g+'%',m.data[i].x,m.data[i].y-4)});ctx.restore()}}}});
+new Chart(document.getElementById('ageDonut'),{type:'doughnut',data:{datasets:[{data:[18,32,33,12,5],backgroundColor:['#6B4EE6','#9B89F5','#C4B8FA','#E0D9FD','#F1EEFF'],borderWidth:0}]},options:{responsive:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});
+
+const rb=document.getElementById('risk-bars');
+if(rb) rb.innerHTML=[{l:'Fear of job loss',p:68,c:'#E8622A'},{l:'Skills mismatch',p:64,c:'#E8622A'},{l:'Limited funding access',p:61,c:'#F5A623'},{l:'Excluded from decisions',p:57,c:'#F5A623'},{l:'Safety concerns',p:54,c:'#F5A623'},{l:'Poor communication',p:49,c:'#F5A623'}].map(d=>`<div class="cb-row"><div class="cb-lbl">${d.l}</div><div class="cb-trk"><div class="cb-fill" style="width:${d.p}%;background:${d.c}"></div></div><div class="cb-pct">${d.p}%</div></div>`).join('');
+
+function calcROI(){const dc=parseInt(document.getElementById('dc').value);const pc=parseInt(document.getElementById('pc').value);const pb=parseInt(document.getElementById('pb').value)/100;const gn=parseInt(document.getElementById('gn').value);document.getElementById('dc-v').textContent=dc;document.getElementById('pc-v').textContent=pc;document.getElementById('pb-v').textContent=Math.round(pb*100);document.getElementById('gn-v').textContent=gn;const evs=Math.round(dc*pb);const nb=Math.round(evs+(gn*3)-pc);const roi=(nb/pc).toFixed(1);document.getElementById('ev-s').textContent='R'+evs+'M';document.getElementById('nb').textContent='R'+nb+'M';document.getElementById('roi-r').textContent=roi+'×';}
+
+// ─── Pipeline ─────────────────────────────────────────────────────────────────
+const pipelineData=[{lbl:'Identified as impacted',n:72,pct:100},{lbl:'Enrolled in bootcamp',n:67,pct:93},{lbl:'Completed training',n:57,pct:79},{lbl:'Passed final assessment',n:48,pct:67},{lbl:'Shadowing engineers',n:29,pct:40},{lbl:'Redeployed into new roles',n:18,pct:25},{lbl:'Pending support review',n:11,pct:15}];
+function renderPipelineBars(id){const el=document.getElementById(id);if(!el) return;el.innerHTML=pipelineData.map(d=>`<div class="pipeline-row"><div class="pipeline-lbl">${d.lbl}</div><div class="pipeline-trk"><div class="pipeline-fill" style="width:${d.pct}%"><span>${d.n}</span></div></div><div class="pipeline-pct">${d.pct}%</div></div>`).join('');}
+renderPipelineBars('pipeline-bars');
+
+// ─── Workers data ─────────────────────────────────────────────────────────────
+const WORKERS=[
+  {id:'KIO-48201',name:'Donald Mokoena',role:'Haul Truck Driver',risk:'High',score:78,dig:3,mech:4,comm:3,status:'Redeployed'},
+  {id:'KIO-48202',name:'Thabo Nkosi',role:'Haul Truck Driver',risk:'High',score:82,dig:4,mech:3,comm:4,status:'Shadowing'},
+  {id:'KIO-48203',name:'Maria Dlamini',role:'Dispatcher',risk:'Medium',score:71,dig:3,mech:2,comm:5,status:'Training'},
+  {id:'KIO-48204',name:'James Molefe',role:'Haul Truck Driver',risk:'High',score:85,dig:4,mech:4,comm:3,status:'Redeployed'},
+  {id:'KIO-48205',name:'Nomsa Khumalo',role:'Maintenance Helper',risk:'Medium',score:68,dig:2,mech:4,comm:3,status:'Pending'},
+  {id:'KIO-48206',name:'Peter Sibiya',role:'Haul Truck Driver',risk:'High',score:55,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48207',name:'Lerato Mahlangu',role:'Haul Truck Driver',risk:'High',score:96,dig:5,mech:4,comm:4,status:'Shadowing'},
+  {id:'KIO-48208',name:'Samuel Mthembu',role:'Fuel Bay Operator',risk:'Low',score:75,dig:3,mech:3,comm:4,status:'Redeployed'},
+  {id:'KIO-48209',name:'Zanele Mabaso',role:'Haul Truck Driver',risk:'High',score:79,dig:4,mech:3,comm:4,status:'Training'},
+  {id:'KIO-48210',name:'Sipho Dlamini',role:'Haul Truck Driver',risk:'High',score:62,dig:2,mech:4,comm:2,status:'Pending'},
+  {id:'KIO-48211',name:'Precious Tshabalala',role:'Dispatcher',risk:'Medium',score:84,dig:4,mech:2,comm:5,status:'Redeployed'},
+  {id:'KIO-48212',name:'Andile Zulu',role:'Haul Truck Driver',risk:'High',score:73,dig:3,mech:4,comm:3,status:'Training'},
+  {id:'KIO-48213',name:'Refiloe Seleka',role:'Haul Truck Driver',risk:'High',score:48,dig:1,mech:2,comm:2,status:'Pending'},
+  {id:'KIO-48214',name:'Karabo Sithole',role:'Maintenance Helper',risk:'Low',score:81,dig:3,mech:5,comm:3,status:'Redeployed'},
+  {id:'KIO-48215',name:'Nomvula Vilakazi',role:'Haul Truck Driver',risk:'High',score:67,dig:3,mech:3,comm:3,status:'Shadowing'},
+  {id:'KIO-48216',name:'Bongani Radebe',role:'Pit Supervisor',risk:'Low',score:91,dig:4,mech:4,comm:5,status:'Redeployed'},
+  {id:'KIO-48217',name:'Lindiwe Mkhize',role:'Haul Truck Driver',risk:'Medium',score:70,dig:3,mech:3,comm:4,status:'Training'},
+  {id:'KIO-48218',name:'Johan van der Merwe',role:'Maintenance Helper',risk:'Low',score:88,dig:4,mech:5,comm:3,status:'Redeployed'},
+  {id:'KIO-48219',name:'Tebogo Moeng',role:'Haul Truck Driver',risk:'High',score:59,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48220',name:'Khomotso Nkosi',role:'Haul Truck Driver',risk:'High',score:77,dig:3,mech:4,comm:3,status:'Shadowing'},
+  {id:'KIO-48221',name:'Nokwanda Ntuli',role:'Dispatcher',risk:'Medium',score:80,dig:4,mech:2,comm:5,status:'Training'},
+  {id:'KIO-48222',name:'Mandla Shabalala',role:'Haul Truck Driver',risk:'High',score:65,dig:2,mech:4,comm:3,status:'Pending'},
+  {id:'KIO-48223',name:'Fikile Mokoena',role:'Fuel Bay Operator',risk:'Low',score:83,dig:3,mech:3,comm:4,status:'Redeployed'},
+  {id:'KIO-48224',name:'Siphamandla Cele',role:'Haul Truck Driver',risk:'High',score:72,dig:3,mech:4,comm:3,status:'Training'},
+  {id:'KIO-48225',name:'Ntombi Khoza',role:'Haul Truck Driver',risk:'Medium',score:76,dig:3,mech:3,comm:4,status:'Shadowing'},
+  {id:'KIO-48226',name:'Werner Fourie',role:'Maintenance Helper',risk:'Low',score:87,dig:4,mech:5,comm:3,status:'Redeployed'},
+  {id:'KIO-48227',name:'Busisiwe Mthethwa',role:'Haul Truck Driver',risk:'High',score:53,dig:2,mech:2,comm:3,status:'Pending'},
+  {id:'KIO-48228',name:'Pule Motaung',role:'Haul Truck Driver',risk:'High',score:69,dig:3,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48229',name:'Dineo Sefako',role:'Dispatcher',risk:'Medium',score:74,dig:3,mech:2,comm:5,status:'Training'},
+  {id:'KIO-48230',name:'Mpho Ramokgopa',role:'Haul Truck Driver',risk:'High',score:60,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48231',name:'Siyabonga Ntanzi',role:'Haul Truck Driver',risk:'High',score:78,dig:3,mech:4,comm:3,status:'Shadowing'},
+  {id:'KIO-48232',name:'Gugu Majola',role:'Maintenance Helper',risk:'Low',score:85,dig:3,mech:5,comm:3,status:'Redeployed'},
+  {id:'KIO-48233',name:'Thuli Nxumalo',role:'Haul Truck Driver',risk:'Medium',score:71,dig:3,mech:3,comm:4,status:'Training'},
+  {id:'KIO-48234',name:'Christiaan Swart',role:'Pit Supervisor',risk:'Low',score:93,dig:5,mech:4,comm:5,status:'Redeployed'},
+  {id:'KIO-48235',name:'Zodwa Mhlanga',role:'Haul Truck Driver',risk:'High',score:56,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48236',name:'Ntsako Baloyi',role:'Haul Truck Driver',risk:'High',score:80,dig:4,mech:3,comm:4,status:'Shadowing'},
+  {id:'KIO-48237',name:'Amahle Dube',role:'Haul Truck Driver',risk:'Medium',score:66,dig:3,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48238',name:'Kagiso Mokwena',role:'Fuel Bay Operator',risk:'Low',score:79,dig:3,mech:3,comm:4,status:'Redeployed'},
+  {id:'KIO-48239',name:'Tshepo Lekhotla',role:'Haul Truck Driver',risk:'High',score:58,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48240',name:'Sibusiso Hadebe',role:'Haul Truck Driver',risk:'High',score:86,dig:4,mech:4,comm:4,status:'Shadowing'},
+  {id:'KIO-48241',name:'Palesa Molapo',role:'Dispatcher',risk:'Medium',score:77,dig:3,mech:2,comm:5,status:'Training'},
+  {id:'KIO-48242',name:'Goodluck Nkwanyana',role:'Haul Truck Driver',risk:'High',score:63,dig:2,mech:4,comm:2,status:'Pending'},
+  {id:'KIO-48243',name:'Lungelo Mhlongo',role:'Haul Truck Driver',risk:'High',score:74,dig:3,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48244',name:'Sindisiwe Gumbi',role:'Maintenance Helper',risk:'Low',score:89,dig:4,mech:5,comm:3,status:'Redeployed'},
+  {id:'KIO-48245',name:'Olebogeng Tau',role:'Haul Truck Driver',risk:'High',score:61,dig:2,mech:3,comm:3,status:'Pending'},
+  {id:'KIO-48246',name:'Ntombifikile Msweli',role:'Haul Truck Driver',risk:'High',score:70,dig:3,mech:3,comm:3,status:'Shadowing'},
+  {id:'KIO-48247',name:'Riaan Cronje',role:'Maintenance Helper',risk:'Low',score:91,dig:4,mech:5,comm:4,status:'Redeployed'},
+  {id:'KIO-48248',name:'Thandeka Myeni',role:'Haul Truck Driver',risk:'Medium',score:73,dig:3,mech:3,comm:4,status:'Training'},
+  {id:'KIO-48249',name:'Sibonelo Gule',role:'Haul Truck Driver',risk:'High',score:64,dig:2,mech:3,comm:3,status:'Pending'},
+  {id:'KIO-48250',name:'Nomfundo Ngcobo',role:'Haul Truck Driver',risk:'High',score:57,dig:2,mech:2,comm:3,status:'Pending'},
+  {id:'KIO-48251',name:'Lebogang Moloi',role:'Dispatcher',risk:'Medium',score:82,dig:4,mech:2,comm:5,status:'Redeployed'},
+  {id:'KIO-48252',name:'Bafana Mahlangu',role:'Haul Truck Driver',risk:'High',score:68,dig:3,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48253',name:'Hlanganani Zondo',role:'Haul Truck Driver',risk:'High',score:75,dig:3,mech:4,comm:3,status:'Shadowing'},
+  {id:'KIO-48254',name:'Ayanda Mthembu',role:'Haul Truck Driver',risk:'High',score:53,dig:2,mech:2,comm:2,status:'Pending'},
+  {id:'KIO-48255',name:'Nobuhle Nxumalo',role:'Fuel Bay Operator',risk:'Low',score:84,dig:3,mech:3,comm:4,status:'Redeployed'},
+  {id:'KIO-48256',name:'Tshilidzi Mudau',role:'Haul Truck Driver',risk:'High',score:69,dig:3,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48257',name:'Zanokuhle Buthelezi',role:'Haul Truck Driver',risk:'High',score:76,dig:3,mech:4,comm:3,status:'Shadowing'},
+  {id:'KIO-48258',name:'Vusi Mthethwa',role:'Haul Truck Driver',risk:'High',score:60,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48259',name:'Nokuthula Ngema',role:'Maintenance Helper',risk:'Low',score:87,dig:4,mech:5,comm:3,status:'Redeployed'},
+  {id:'KIO-48260',name:'Siphe Mfeka',role:'Haul Truck Driver',risk:'High',score:66,dig:2,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48261',name:'Brenda Molapo',role:'Dispatcher',risk:'Medium',score:78,dig:3,mech:2,comm:5,status:'Training'},
+  {id:'KIO-48262',name:'Mlungisi Ntuli',role:'Haul Truck Driver',risk:'High',score:55,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48263',name:'Thandi Zulu',role:'Haul Truck Driver',risk:'Medium',score:80,dig:4,mech:3,comm:4,status:'Shadowing'},
+  {id:'KIO-48264',name:'Mandisi Nkosi',role:'Haul Truck Driver',risk:'High',score:63,dig:2,mech:4,comm:2,status:'Pending'},
+  {id:'KIO-48265',name:'Lungisa Mpungose',role:'Pit Supervisor',risk:'Low',score:94,dig:5,mech:4,comm:5,status:'Redeployed'},
+  {id:'KIO-48266',name:'Zethu Mkhwanazi',role:'Haul Truck Driver',risk:'High',score:71,dig:3,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48267',name:'Gcina Buthelezi',role:'Haul Truck Driver',risk:'High',score:59,dig:2,mech:3,comm:2,status:'Pending'},
+  {id:'KIO-48268',name:'Nokwazi Mbatha',role:'Haul Truck Driver',risk:'Medium',score:77,dig:3,mech:3,comm:4,status:'Shadowing'},
+  {id:'KIO-48269',name:'Sandile Mthethwa',role:'Maintenance Helper',risk:'Low',score:86,dig:4,mech:5,comm:3,status:'Redeployed'},
+  {id:'KIO-48270',name:'Nkosinathi Hadebe',role:'Haul Truck Driver',risk:'High',score:62,dig:2,mech:3,comm:3,status:'Pending'},
+  {id:'KIO-48271',name:'Phindile Zungu',role:'Haul Truck Driver',risk:'High',score:74,dig:3,mech:3,comm:3,status:'Training'},
+  {id:'KIO-48272',name:'Lungelo Cele',role:'Haul Truck Driver',risk:'High',score:50,dig:1,mech:2,comm:2,status:'Pending'},
+];
+
+function pillHTML(risk){const map={High:'pill-red',Medium:'pill-amber',Low:'pill-green'};return `<span class="pill ${map[risk]||'pill-gray'}">${risk}</span>`;}
+function statusPill(s){const m={Redeployed:'pill-green',Shadowing:'pill-teal',Training:'pill-blue',Pending:'pill-amber'};return `<span class="pill ${m[s]||'pill-gray'}">${s}</span>`;}
+function miniBar(v){return `<div class="skill-mini-bar"><div class="skill-mini-fill" style="width:${v*20}%"></div></div>`;}
+const avColors=['#6B4EE6','#18A876','#E8622A','#2B7BE0','#F5A623','#D4537E','#0F6E56'];
+const initials=n=>n.split(' ').map(x=>x[0]).join('').slice(0,2);
+
+function getFilteredWorkers(sId,rId,stId){
+  const s=(document.getElementById(sId)?.value||'').toLowerCase();
+  const r=document.getElementById(rId)?.value||'';
+  const st=document.getElementById(stId)?.value||'';
+  return WORKERS.filter(w=>(!s||(w.name+w.id).toLowerCase().includes(s))&&(!r||w.role===r)&&(!st||w.status===st));
+}
+function renderWorkerTable(tbId,sId,rId,stId,modId){
+  const tb=document.getElementById(tbId);
+  if(!tb) return;
+  const list=getFilteredWorkers(sId,rId,stId);
+  tb.innerHTML=list.map(w=>{const i=WORKERS.indexOf(w);return `<tr onclick="showWorkerModal(${i},'${modId}')" style="cursor:pointer"><td><div style="display:flex;align-items:center;gap:6px"><div class="w-av" style="background:${avColors[i%avColors.length]};color:#fff">${initials(w.name)}</div><div><div style="font-size:10px;font-weight:500">${w.name}</div><div style="font-size:8px;color:var(--muted)">${w.id}</div></div></div></td><td style="font-size:9px;color:var(--muted)">${w.role}</td><td>${pillHTML(w.risk)}</td><td style="font-size:10px;font-weight:500">${w.score}%</td><td><div class="skill-mini">${miniBar(w.dig)}<span style="font-size:8px;color:var(--muted)">${w.dig}</span></div></td><td><div class="skill-mini">${miniBar(w.mech)}<span style="font-size:8px;color:var(--muted)">${w.mech}</span></div></td><td><div class="skill-mini">${miniBar(w.comm)}<span style="font-size:8px;color:var(--muted)">${w.comm}</span></div></td><td>${statusPill(w.status)}</td></tr>`;}).join('');
+}
+function filterWorkers(){renderWorkerTable('workers-tbody','w-search','w-role','w-status','w-modal');}
+function filterStkWorkers(){renderWorkerTable('stk-workers-tbody','stk-w-search','stk-w-role','stk-w-status','stk-w-modal');}
+
+function showWorkerModal(idx,modId){
+  const w=WORKERS[idx];const mod=document.getElementById(modId||'w-modal');if(!mod) return;
+  mod.style.display='block';
+  const pathways=[{t:'Remote Fleet Operator',d:'Monitor autonomous haul trucks from control room',pct:Math.min(99,w.dig*15+w.mech*8+w.score*0.3|0)},{t:'Control Room Technician',d:'Fleet telemetry and alarm response',pct:Math.min(99,w.dig*14+w.comm*10+w.score*0.25|0)},{t:'Maintenance Technician',d:'Service autonomous haul-truck systems',pct:Math.min(99,w.mech*16+w.dig*8+w.score*0.2|0)},{t:'Safety & Compliance Officer',d:'Field safety oversight of mixed operations',pct:Math.min(99,w.comm*14+w.mech*8+w.score*0.2|0)}].sort((a,b)=>b.pct-a.pct);
+  mod.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="font-size:11px;font-weight:500">${w.name} — Detailed Profile</div><button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--muted)">✕</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><div style="font-size:9px;color:var(--muted)">ID: <span style="color:var(--txt)">${w.id}</span></div><div style="font-size:9px;color:var(--muted)">Role: <span style="color:var(--txt)">${w.role}</span></div><div style="font-size:9px;color:var(--muted)">Bootcamp score: <span style="font-weight:500">${w.score}%</span></div><div style="font-size:9px;color:var(--muted)">Risk: ${pillHTML(w.risk)}</div></div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px">Skills profile</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">${[['Digital literacy',w.dig],['Mechanical aptitude',w.mech],['Communication',w.comm]].map(([n,v])=>`<div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:9px">${n}</span><span style="font-size:9px;color:var(--ore);font-weight:500">${v}/5</span></div><div class="skill-bar-ap"><div class="skill-bar-ap-fill" style="width:${v*20}%"></div></div></div>`).join('')}</div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px">Recommended pathways</div>${pathways.slice(0,3).map((p,i)=>`<div style="background:${i===0?'var(--oreL)':'var(--bg)'};border:.5px solid ${i===0?'var(--ore)':'var(--bdr)'};border-radius:6px;padding:7px;margin-bottom:5px;display:flex;align-items:center;gap:8px"><div style="font-size:16px;font-weight:500;color:var(--ore);width:36px;text-align:center">${p.pct}%</div><div style="flex:1"><div style="font-size:10px;font-weight:500">${p.t}</div><div style="font-size:9px;color:var(--muted)">${p.d}</div></div>${i===0?`<span class="pill pill-green">Best fit</span>`:''}</div>`).join('')}`;
+}
+
+// ─── Bootcamp ─────────────────────────────────────────────────────────────────
+const bcDays=[{d:'D1',name:'Digital &amp; System Fundamentals',comp:96,score:81},{d:'D2',name:'Autonomous System Fundamentals',comp:92,score:78},{d:'D3',name:'Safety &amp; Risk Management',comp:100,score:85},{d:'D4',name:'Exception &amp; Incident Management',comp:82,score:73},{d:'D5',name:'Simulation Training',comp:80,score:71},{d:'D6',name:'Performance Monitoring &amp; Optimisation',comp:74,score:69},{d:'D7',name:'Role Transition + Assessment',comp:72,score:65}];
+let bcDone=false;
+function initBootcamp(){if(bcDone) return;bcDone=true;const cols=bcDays.map(d=>d.comp>=90?'#4CAF50':d.comp>=80?'#F5A623':'#E53935');new Chart(document.getElementById('bootcampChart'),{type:'bar',data:{labels:bcDays.map(d=>d.d),datasets:[{label:'Completion',data:bcDays.map(d=>d.comp),backgroundColor:cols,borderWidth:0},{label:'Avg Score',data:bcDays.map(d=>d.score),backgroundColor:'#888780',borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888780',font:{size:9}},grid:{display:false}},y:{min:0,max:100,ticks:{color:'#888780',font:{size:9}},grid:{color:'rgba(0,0,0,.05)'}}}}});const md=document.getElementById('module-detail');if(md) md.innerHTML=bcDays.map(d=>{const cc=d.comp>=90?'#4CAF50':d.comp>=80?'#F5A623':'#E53935';return `<div class="dd-row"><div class="dd-day">${d.d}</div><div class="dd-name">${d.name}</div><div class="dd-bar-wrap"><div class="dd-bar-row"><span style="color:var(--muted)">Comp</span><div class="dd-bar-trk"><div class="dd-bar-fill" style="width:${d.comp}%;background:${cc}"></div></div><span style="font-size:8px;color:${cc};font-weight:500">${d.comp}%</span></div><div class="dd-bar-row"><span style="color:var(--muted)">Score</span><div class="dd-bar-trk"><div class="dd-bar-fill" style="width:${d.score}%;background:#2B7BE0"></div></div><span style="font-size:8px;color:#2B7BE0;font-weight:500">${d.score}%</span></div></div><div><span class="pill ${d.comp>=80?'pill-green':'pill-amber'}">${d.comp>=80?'Good':'Coaching'}</span></div></div>`}).join('');}
+
+// ─── Evaluation — out of 5, updated text from new doc ────────────────────────
+const evalData=[
+  {name:'Stakeholder needs',score:5,txt:'Workers wanted job security above all else. Host communities expected localised employment and preferential procurement. Training &amp; upskilling directly addresses all these needs by keeping workers employed in new roles — reducing fear of displacement and strengthening trust in Kumba\'s stewardship (Pugh weight: 0.25, score: +1).'},
+  {name:'Critical success factors',score:4,txt:'Upskilling is inherently tied to understanding how automation changes operational roles. It positions VANDKS-B as a strategic partner for precise programmes aligned to CAT MineStar adoption. Kumba\'s organisational structure is leveraged through existing HR, L&D and operations teams (Pugh weight: 0.10, score: +1). Idea 2 and Idea 4 scored 0 on this criterion.'},
+  {name:'Governance &amp; compliance',score:5,txt:'By visibly retaining haul truck drivers through redesigned roles, Kumba demonstrates transparent handling of workforce changes to employees, communities and regulators. This directly supports the Labour Relations Act, Mining Charter skills development obligations, and King V ESG reporting commitments (Pugh weight: 0.15, score: +1).'},
+  {name:'Safety constraints',score:3,txt:'Transitioning drivers into supervisory or control-room roles reduces exposure to dust, collisions, and fatigue. This supports Kumba\'s zero-harm commitment. Caution: if upskilling is framed as slowing automation, it could appear misaligned with zero-harm. The upskilling programme itself addresses risks caused by autonomous systems through certified training (Pugh weight: 0.15, score: 0 — meets baseline).'},
+  {name:'Value creation potential',score:4,txt:'Reskilled workers gain transferable skills — autonomous oversight, data analysis, safety monitoring — that remain useful beyond the mine\'s life. Access to Kumba\'s housing, healthcare and education benefits is preserved. This ensures communities are not left behind when the asset winds down (Pugh weight: 0.15, score: +1).'},
+  {name:'Feasibility',score:3,txt:'Drivers already have mining knowledge, safety training, and familiarity with Kumba\'s culture — reskilling into AI-enabled oversight roles is a natural extension. Training costs are embedded in the CAT MineStar procurement contract. However, not all displaced drivers can be absorbed into redesigned roles, and capital investment is required (Pugh weight: 0.10, score: 0). Cross-industry redeployment introduces external integration challenges with SETA and infrastructure partners.'},
+  {name:'Sustainability',score:4,txt:'Embedding workers into future-oriented roles creates a workforce that can pivot into other industries — renewables, logistics, infrastructure — beyond mining, ensuring sustainable livelihoods. The platform supports ESG communication, procurement engagement, safety campaigns and closure planning long after automation is complete (Pugh weight: 0.10, score: 0 for sustainability, but strong platform sustainability).'},
+];
+function starsHTML(s){return Array.from({length:5},(_,i)=>`<svg class="star ${i<s?'':'empty'}" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`).join('');}
+function renderEval(){const g=document.getElementById('eval-grid');if(!g||g.children.length>0) return;const col=s=>s>=4?'var(--teal)':s>=3?'var(--amber)':'var(--red)';g.innerHTML=evalData.map((e,i)=>`<div class="ev" style="${i===evalData.length-1?'grid-column:1/-1':''}"><div class="ev-ttl">${e.name}<span><span class="snum" style="color:${col(e.score)}">${e.score}</span><span class="sdenom">/5</span></span></div><div class="stars">${starsHTML(e.score)}</div><div class="ev-bar"><div class="ev-fill" style="width:${(e.score/5)*100}%;background:${col(e.score)}"></div></div><div class="ev-txt">${e.txt}</div></div>`).join('');}
+
+// ─── Redeployment ─────────────────────────────────────────────────────────────
+const PATHWAYS=[{id:'remote',title:'Remote Fleet Operator',blurb:'Pilot autonomous haul trucks from the Sishen control centre.',weights:{digital:5,mechanical:4,communication:3,leadership:2,safety:5,education:3},training:'6-week CAT MineStar ReSkill certification'},{id:'control',title:'Control Room Technician',blurb:'Monitor fleet telemetry and intervene on alarms.',weights:{digital:5,mechanical:3,communication:4,leadership:3,safety:5,education:4},training:'8-week ROC technician course'},{id:'maint',title:'Autonomous Fleet Maintenance',blurb:'Diagnose and service autonomous haul-truck systems.',weights:{digital:4,mechanical:5,communication:2,leadership:2,safety:5,education:4},training:'12-week OEM-certified bridging'},{id:'safety',title:'Safety & Compliance Officer',blurb:'Field safety oversight of mixed operations.',weights:{digital:3,mechanical:3,communication:5,leadership:4,safety:5,education:4},training:'SAMTRAC + Kumba safety induction'},{id:'liaison',title:'Community Liaison Officer',blurb:'Interface between mine and Siyamthemba/Kathu forums.',weights:{digital:3,mechanical:1,communication:5,leadership:5,safety:3,education:4},training:'10-week stakeholder engagement diploma'},{id:'infra',title:'Infrastructure Sector Redeployment',blurb:'Cross-industry placement via SETA partnerships (roads, housing, renewables).',weights:{digital:2,mechanical:4,communication:3,leadership:2,safety:4,education:3},training:'SETA bridging course + industry induction'}];
+const RD_EMPS=WORKERS.map(w=>({id:w.id,fname:w.name.split(' ')[0],sname:w.name.split(' ').slice(1).join(' '),role:w.role==='Haul Truck Driver'?'Haul Truck Operator':w.role,years:Math.floor(Math.random()*20)+3,education:w.score>=80?4:3,safety:w.risk==='High'?4:5,skills:{digital:w.dig,mechanical:w.mech,communication:w.comm,leadership:Math.floor(Math.random()*3)+2},status:w.status==='Redeployed'?'matched':w.status==='Pending'?'pending':'pending'}));
+let rdState={selected:null};
+function matchPW(emp){const ev={digital:emp.skills.digital,mechanical:emp.skills.mechanical,communication:emp.skills.communication,leadership:emp.skills.leadership,safety:emp.safety,education:emp.education};return PATHWAYS.map(p=>{let score=0,max=0,gapDim=null,gapSize=-1;for(const k of Object.keys(p.weights)){const w=p.weights[k],v=ev[k];score+=Math.min(v,w)*w;max+=w*w;const g=w-v;if(g>gapSize){gapSize=g;gapDim=k;}}let pct=Math.round((score/max)*100);if(emp.years>=10) pct=Math.min(100,pct+3);return{...p,pct,gapDim,gapSize:Math.max(0,gapSize)};}).sort((a,b)=>b.pct-a.pct);}
+function initRedeployment(){updateRdKPIs();rdRoster();if(RD_EMPS.length) rdSelect(RD_EMPS[0].id);}
+function updateRdKPIs(){const total=RD_EMPS.length,matched=RD_EMPS.filter(e=>e.status==='matched').length,pending=RD_EMPS.filter(e=>e.status==='pending').length,risk=RD_EMPS.filter(e=>e.status==='risk').length;document.getElementById('kpiMatched').textContent=matched;document.getElementById('kpiPct').textContent=' / '+(total?Math.round(matched/total*100):0)+'%';document.getElementById('kpiPending').textContent=pending;document.getElementById('kpiRisk').textContent=risk;document.getElementById('roster-chip').textContent=total+' records';}
+function rdFilter(){const s=(document.getElementById('rd-search')?.value||'').toLowerCase(),r=document.getElementById('rd-role')?.value||'',st=document.getElementById('rd-status')?.value||'';const tb=document.getElementById('rd-roster');if(!tb) return;const sMap={pending:'pill-amber',matched:'pill-green',risk:'pill-red'};const sLbl={pending:'Pending',matched:'Matched',risk:'At Risk'};tb.innerHTML=RD_EMPS.filter(e=>(!s||(e.fname+' '+e.sname+' '+e.id).toLowerCase().includes(s))&&(!r||e.role.includes(r.split(' ')[0]))&&(!st||e.status===st)).map(e=>`<div class="roster-row ${rdState.selected===e.id?'sel':''}" onclick="rdSelect('${e.id}')"><div style="width:26px;height:26px;border-radius:50%;background:var(--ore);color:#fff;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">${e.fname[0]+e.sname[0]}</div><div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.fname} ${e.sname}</div><div style="font-size:8px;color:var(--muted)">${e.id} · ${e.role}</div></div><span class="pill ${sMap[e.status]||'pill-gray'}">${sLbl[e.status]||e.status}</span></div>`).join('');}
+function rdRoster(){rdFilter();}
+function rdSelect(id){rdState.selected=id;rdRoster();const emp=RD_EMPS.find(e=>e.id===id);const ap=document.getElementById('rd-assess'),chip=document.getElementById('assess-chip');if(!emp){chip.textContent='No employee selected';return;}chip.textContent=emp.id;const matches=matchPW(emp);const DL={digital:'Digital literacy',mechanical:'Mechanical aptitude',communication:'Communication',leadership:'Leadership',safety:'Safety record',education:'Formal education'};ap.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:.5px solid var(--bdr);margin-bottom:12px"><div style="width:44px;height:44px;border-radius:50%;background:var(--ore);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;flex-shrink:0">${emp.fname[0]+emp.sname[0]}</div><div><div style="font-size:13px;font-weight:500">${emp.fname} ${emp.sname}</div><div style="font-size:9px;color:var(--muted)">${emp.id} · ${emp.role} · ${emp.years} yrs service</div></div></div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Skills Profile</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px 16px;margin-bottom:14px">${['Digital Literacy','Mechanical Aptitude','Communication','Leadership'].map((n,i)=>{const v=[emp.skills.digital,emp.skills.mechanical,emp.skills.communication,emp.skills.leadership][i];return `<div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:9px">${n}</span><span style="font-size:9px;color:var(--ore);font-weight:500">${v}/5</span></div><div class="skill-bar-ap"><div class="skill-bar-ap-fill" style="width:${v*20}%"></div></div></div>`}).join('')}</div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Recommended Pathways</div>${matches.slice(0,4).map((m,i)=>`<div class="pathway-card ${i===0?'top':''}"><div class="p-rank">${i+1}</div><div><div class="p-ttl">${m.title}</div><div class="p-desc">${m.blurb}</div>${m.gapSize>0?`<div class="p-gap">Gap: ${DL[m.gapDim]||m.gapDim} · ${m.training}</div>`:`<div class="p-gap" style="color:var(--green)">Ready for placement · ${m.training}</div>`}</div><div><div class="p-pct">${m.pct}%</div><div class="p-lbl">Match</div></div></div>`).join('')}<div style="display:flex;gap:6px;margin-top:8px"><button class="assign-btn" onclick="rdAssign('${emp.id}')">Assign to ${matches[0].title}</button><button class="flag-btn" onclick="rdFlag('${emp.id}')">Flag for Review</button></div>`;}
+function rdAssign(empId){const e=RD_EMPS.find(x=>x.id===empId);if(e) e.status='matched';updateRdKPIs();rdRoster();rdSelect(empId);}
+function rdFlag(empId){const e=RD_EMPS.find(x=>x.id===empId);if(e) e.status=e.status==='risk'?'pending':'risk';updateRdKPIs();rdRoster();rdSelect(empId);}
+
+// ─── Solution detail content (updated with new doc) ───────────────────────────
+const SOL_PROG=`<div class="sol-detail-head"><h3>Employee-Centred Programme — VANDKS-B Final Solution</h3><button class="sol-detail-close" onclick="closeSolDetail('prog')">✕</button></div><div class="sol-detail-body">
+<div class="sol-section"><h4>Problem Framing</h4><p>Kumba seeks to implement CAT MineStar Command for Hauling to improve productivity, reduce costs, and improve safety. The core challenge is not automation itself but <strong>how Kumba can implement self-driving vehicles while mitigating the risk that job losses from automation pose to its social licence to operate.</strong></p></div>
+<div class="sol-section"><h4>7-Day Bootcamp — Day-by-Day Breakdown</h4>
+<div class="sol-day"><div class="sol-day-title">Day 1 — Digital &amp; System Fundamentals</div><div class="sol-day-desc">Control room interface training, MineStar dashboard navigation, use of manuals and quick-reference guides.</div></div>
+<div class="sol-day"><div class="sol-day-title">Day 2 — Autonomous System Fundamentals</div><div class="sol-day-desc">How CAT MineStar Command for Hauling works: GPS navigation, sensors &amp; collision avoidance, fleet coordination logic.</div></div>
+<div class="sol-day"><div class="sol-day-title">Day 3 — Safety &amp; Risk Management</div><div class="sol-day-desc">Autonomous operating zones, human-machine interaction rules, emergency stop procedures, incident escalation protocols.</div></div>
+<div class="sol-day"><div class="sol-day-title">Day 4 — Exception &amp; Incident Management</div><div class="sol-day-desc">System alerts, truck stoppages, communication failures, decision-making frameworks (if/then scenarios), logging and reporting.</div></div>
+<div class="sol-day"><div class="sol-day-title">Day 5 — Simulation Training</div><div class="sol-day-desc">Practical experience without risk: equipment failure, obstacle detection, multi-truck coordination, real-time decision-making exercises.</div></div>
+<div class="sol-day"><div class="sol-day-title">Day 6 — Performance Monitoring &amp; Optimisation</div><div class="sol-day-desc">Reading fleet efficiency, downtime and productivity metrics. Using system data to make operational decisions.</div></div>
+<div class="sol-day"><div class="sol-day-title">Day 7 — Role Transition + Assessment</div><div class="sol-day-desc">Supervisory skills, communication with engineers, professional reporting. Assessment: practical simulation test, safety competency check, scenario-based evaluation.</div></div>
+</div>
+<div class="sol-section"><h4>Post-Bootcamp</h4><p>Workers job-shadow engineers for two weeks. Decision: ready for new role, or placed in cross-industry redeployment. Training costs embedded in CAT MineStar procurement contract — no external specialist hiring needed.</p></div>
+<div class="sol-section"><h4>Cross-Industry Redeployment (for workers who don't pass)</h4><p>VANDKS-B aids redeployment into the infrastructure sector via SETA partnerships. External integration challenges include: coordination with employers and industry bodies, matching skill outputs with infrastructure sector demand, and managing timing gaps between training completion and employment placement. Cross-industry redeployment must avoid sending workers to geographically distant areas, as communities may perceive this as Kumba abandoning its responsibilities.</p></div>
+<div class="sol-section"><h4>Feasibility — Updated Assessment</h4>
+<table class="feas-table">
+  <tr><th>Technical</th><td>Core technologies already exist. Existing simulation tools, digital dashboards, and operating manuals can deliver the programme. Most uncertain: number of workers who can realistically transition. Validated through pilot cohort and skills-gap assessment.</td></tr>
+  <tr><th>Operational integration</th><td>Aligns with existing HR, operations, safety, training, digital transformation, and community relations departments. Cross-industry redeployment introduces external integration challenges with SETA and infrastructure partners. Needs joint operating model pilots.</td></tr>
+  <tr><th>Governance &amp; compliance</th><td>Demonstrates responsible workforce transition. Supports Labour Relations Act, Mining Charter, and ESG reporting. Creates documented records of training, redeployment, employee outcomes, community concerns. Most uncertain: whether redeployment is perceived as indirect retrenchment.</td></tr>
+  <tr><th>Safety</th><td>Autonomous haulage reduces human exposure to collisions, fatigue, dust, and pit traffic. Upskilling programme addresses risks caused by autonomous systems. Most uncertain: transition-period safety while manual and autonomous systems operate together.</td></tr>
+  <tr><th>Stakeholder adoption</th><td>Workers more likely to support change if training leads to real employment outcomes. Communities maintain trust if workers are not discarded. Most uncertain: whether stakeholders trust management's intentions. Needs validation through engagement forums and change-readiness assessments.</td></tr>
+  <tr><th>Commercial</th><td>Upfront spending on training, engagement, and redeployment likely lower than cost of labour unrest, project delays, or failed automation. Programme accelerates adoption, retains experienced workers, and reduces external recruitment costs. Most uncertain: exact ROI timing.</td></tr>
+</table>
+</div>
+<div class="sol-section"><h4>Stakeholder Need Matrix</h4>
+<table class="sol-table"><thead><tr><th>Stakeholder</th><th>Underlying need</th></tr></thead><tbody>
+<tr><td>Host communities (Siyamthemba &amp; Kathu)</td><td>Continued economic inclusion, transparency, localised preferential procurement</td></tr>
+<tr><td>Kumba management</td><td>Efficiency without operational disruption</td></tr>
+<tr><td>Employees (Truck drivers)</td><td>Job continuity and dignified transition</td></tr>
+<tr><td>NUM</td><td>Meaningful consultation and reduced retrenchment risk</td></tr>
+<tr><td>Shareholders</td><td>Low-risk, sustainable transformation</td></tr>
+<tr><td>Regulators</td><td>Compliance, fairness, accountability</td></tr>
+<tr><td>Safety leadership</td><td>Reduced exposure to operational risk</td></tr>
+</tbody></table>
+</div>
+</div>`;
+
+const SOL_PLAT=`<div class="sol-detail-head"><h3>Automation Transparency Platform — Full Detail</h3><button class="sol-detail-close" onclick="closeSolDetail('plat')">✕</button></div><div class="sol-detail-body">
+<div class="sol-section"><h4>What It Is</h4><p>Regular "social licence dialogues" — community engagement sessions with transparent communication about the bootcamp, autonomous truck adoption, and expected employment impacts. Interactive Q&amp;A and feedback collection to manage stakeholder expectations. Facilitated by an HR firm recommended by VANDKS-B.</p></div>
+<div class="sol-section"><h4>How It Operates</h4><p>Deployable via existing channels: WhatsApp, SMS, stakeholder forums, and internal reporting systems — no major infrastructure required. Creates documented engagement records, tracks concerns, monitors responses, and improves transparency. Supports ESG reporting under King V and the Mining Charter.</p></div>
+<div class="sol-section"><h4>Idea Evaluation — Updated Pugh Scores</h4>
+<div class="idea-card idea2"><div class="idea-num">Idea 2 — Cross-Industry Redeployment (Pugh score: +0.68)</div><div class="idea-name">Second-highest performing idea</div><div class="idea-desc">Provides continued employment in infrastructure. Creates tangible community value. <strong>Weakness:</strong> Infrastructure projects pose safety concerns (driver fatigue, poor site conditions). Does not align with Kumba's zero-harm goal (-1 on safety). Requires external partnerships and may be perceived as Kumba "pushing workers out."</div></div>
+<div class="idea-card selected-idea"><div class="idea-num">Idea 3 — Training &amp; Upskilling (Pugh score: +0.70) ✓ SELECTED</div><div class="idea-name">Highest scoring across all criteria</div><div class="idea-desc">Keeps workers in mining roles. Supports zero-harm by moving drivers into lower-risk supervisory roles. Kumba maintains social licence. Scores highest on CSFs (+1) — positions VANDKS-B as strategic partner. Combined with Idea 2 (cross-industry redeployment) for workers who do not pass training.</div></div>
+<div class="idea-card idea4"><div class="idea-num">Idea 4 — Scheduled FSD Trucks (night autonomous, day manual)</div><div class="idea-name">Night operations autonomous, day operations manual</div><div class="idea-desc">Reduces night-time incidents from driver fatigue. Keeps all jobs temporarily. <strong>Strengths:</strong> Stakeholder needs (+1), governance (+1), safety (+1). <strong>Weaknesses:</strong> Lacks a solution for when trucks become fully autonomous. Truck drivers would be hesitant — does not bode well for social licence. No CSF improvement, no sustainability (+0).</div></div>
+</div>
+<div class="sol-section"><h4>Governance &amp; Compliance Alignment</h4><p>Supports Labour Relations Act (exhausting retraining before retrenchment), Mining Charter (skills development), King V (ESG transparency), and OHSA (zero-harm). Creates auditable records for regulatory review. Documented redeployment attempts reduce risk of costly CCMA or Labour Court disputes.</p></div>
+<div class="sol-section"><h4>Sustainability</h4><p>Creates long-term workforce capability and stakeholder management beyond automation rollout. Reskilled workers gain transferable skills — autonomous oversight, data analysis, safety monitoring — that remain valuable in renewables, logistics, and infrastructure after the mine closes.</p></div>
+</div>`;
+
+function toggleSolDetail(type){
+  const colEl=document.getElementById('sol-col-'+type);const detEl=document.getElementById('sol-detail-'+type);
+  if(!colEl||!detEl) return;
+  const isOpen=detEl.classList.contains('open');
+  if(isOpen){detEl.classList.remove('open');colEl.classList.remove('selected');}
+  else{const content=type==='prog'?SOL_PROG:SOL_PLAT;detEl.innerHTML=content;detEl.classList.add('open');colEl.classList.add('selected');}
+}
+function closeSolDetail(type){document.getElementById('sol-detail-'+type)?.classList.remove('open');document.getElementById('sol-col-'+type)?.classList.remove('selected');}
+
+function toggleSolDetail2(type){
+  const colEl=document.getElementById('sol-col-'+type+'2');const detEl=document.getElementById('sol-detail-'+type+'2');
+  if(!colEl||!detEl) return;
+  const isOpen=detEl.classList.contains('open');
+  if(isOpen){detEl.classList.remove('open');colEl.classList.remove('selected');}
+  else{const content=(type==='prog'?SOL_PROG:SOL_PLAT).replace(/closeSolDetail\('/g,"closeSolDetail2('").replace(/sol-detail-prog(?!')/g,'sol-detail-prog2').replace(/sol-col-prog(?!')/g,'sol-col-prog2').replace(/sol-detail-plat(?!')/g,'sol-detail-plat2').replace(/sol-col-plat(?!')/g,'sol-col-plat2');detEl.innerHTML=content;detEl.classList.add('open');colEl.classList.add('selected');}
+}
+function closeSolDetail2(type){document.getElementById('sol-detail-'+type+'2')?.classList.remove('open');document.getElementById('sol-col-'+type+'2')?.classList.remove('selected');}
+
+// ─── Recommendations ──────────────────────────────────────────────────────────
+const recs=[
+  {bg:'#E3F7F0',bl:'#18A876',tc:'#0F6E50',n:1,ttl:'Launch the Automation Transparency Platform immediately',txt:'Deploy via WhatsApp, SMS, and stakeholder forums before automation rollout accelerates. Establish documented feedback loops and formal concern-raising processes. Estimated cost: R5–8M/yr.'},
+  {bg:'#EAF2FD',bl:'#2B7BE0',tc:'#1A4F94',n:2,ttl:'Implement the employee-centred 7-day bootcamp for all 72 affected workers',txt:'Target haul truck drivers first. Partner with CAT MineStar engineers for Day 2 live demonstrations. Embed training costs in the CAT MineStar procurement contract. Track completion rates and role transitions.'},
+  {bg:'#EEF0FF',bl:'#6B4EE6',tc:'#3C3489',n:3,ttl:'Engage NUM formally before implementation begins',txt:'Use the platform to provide NUM with structured, regular updates. Build documented negotiation records. Trust before retrenchment conversations reduces industrial action risk by 60–75%.'},
+  {bg:'#FEF4E3',bl:'#F5A623',tc:'#633806',n:4,ttl:'Formalise SETA and infrastructure partnerships for cross-industry redeployment',txt:'Establish formal agreements with SETA and infrastructure employers now — before training completes. Ensure redeployment placements are geographically proximate to avoid communities perceiving Kumba as abandoning its obligations.'},
+  {bg:'#FEF0EA',bl:'#E8622A',tc:'#712B13',n:5,ttl:'Present the ROI case to board and shareholders',txt:'One major disruption (R180M+) costs more than the entire 3-year platform investment (R28M). Run a pilot programme with a limited cohort to validate training pass rates, safety readiness, redeployment success, and cost-effectiveness before full rollout.'},
+];
+function renderRecs(){const el=document.getElementById('rec-list');if(!el||el.children.length>0) return;el.innerHTML=recs.map(r=>`<div class="rec" style="background:${r.bg};border-left:3px solid ${r.bl}"><div class="rec-n" style="background:${r.bl}">${r.n}</div><div><div class="rec-ttl" style="color:${r.bl}">${r.ttl}</div><div class="rec-txt" style="color:${r.tc}">${r.txt}</div></div></div>`).join('');}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+renderWorkerTable('workers-tbody','w-search','w-role','w-status','w-modal');
+</script>
